@@ -21,7 +21,7 @@ const MAX_FILE_SIZE = 50000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpg", "image/png"];
 
 const individualSchema = z.object({
-  profile: z
+  profileImage: z
   .any()
   .refine((file) => file !== null, { message: "Please select a file" })
   .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 50MB.`)
@@ -52,8 +52,8 @@ interface RegisterIndividualProps {
 }  
 
 const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
-const { setUser, isLoggedIn } = useAuth();
-const [profileImage, setProfileImage] = useState<string | null>(null);
+  const { setUser, isLoggedIn } = useAuth();
+  const [profileShow, setProfileShow] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -61,6 +61,7 @@ const [profileImage, setProfileImage] = useState<string | null>(null);
   const form = useForm<z.infer<typeof individualSchema>>({
     resolver: zodResolver(individualSchema),
     defaultValues: {
+      profileImage: null,
       email: '',
       password: '',
       name: '',
@@ -78,31 +79,48 @@ const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const onSubmit = async (data: z.infer<typeof individualSchema>) => {
     try {
-      console.log('masuk')
-        setLoading(true);
-        setErrorMessage('');
-        const response = await axios.post('http://localhost:3001/api/auth/register', data, {})
-        const { token, userLoggedIn } = response.data.data;
-        console.log(response.data.data)
-        Cookies.set('token', token);
-        setUser(userLoggedIn);
-        if(response.data.code == 201) {
-          const sendVerification = await axios.post('http://localhost:3001/api/auth/send-email-verification', userLoggedIn, {
-            headers: {
-              'Authorization': `Bearer ${token}`
+      setLoading(true);
+      setErrorMessage('');
+
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64String = reader.result as string;
+        const updatedData = {
+          ...data,
+          profileImage: base64String,
+        };
+
+        try {
+          const response = await axios.post('http://localhost:3001/api/auth/register', updatedData, {})
+          const { token, userLoggedIn } = response.data.data;
+
+          Cookies.set('token', token);
+          setUser(userLoggedIn);
+
+          if (response.data.code === 201) {
+            const sendVerification = await axios.post('http://localhost:3001/api/auth/send-email-verification', userLoggedIn, {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            });
+            if (sendVerification.data.code === 200) {
+              router.push('/verification');
             }
-          })
-          console.log(sendVerification.data)
-          if(sendVerification.data.code == 200) {
-            router.push('/verification')
           }
+        } catch (error: any) {
+          if (error.response && error.response.data && error.response.data.code === 400) {
+            setErrorMessage('Email Already Used');
+          } else {
+            console.error('Error submitting form', error);
+          }
+        } finally {
+          setLoading(false);
         }
-    } catch(error: any) {
-      if (error.response && error.response.data && error.response.data.code === 400) {
-        setErrorMessage('Email Already Used');
-      } else {
-        console.error('Error submitting form', error);
-      }
+      };
+
+      reader.readAsDataURL(data.profileImage);
+    } catch (error: any) {
+      console.error('Error processing form', error);
     } finally {
       setLoading(false);
     }
@@ -111,11 +129,11 @@ const [profileImage, setProfileImage] = useState<string | null>(null);
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      form.setValue('profile', file);
+      form.setValue('profileImage', file);
 
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileImage(reader.result as string);
+        setProfileShow(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -140,9 +158,9 @@ const [profileImage, setProfileImage] = useState<string | null>(null);
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='w-full gap-6 flex flex-col font-normal'>
-          <FormField 
+            <FormField 
               control={form.control}
-              name="profile"
+              name="profileImage"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className='text-[#333] flex justify-center'>Profile Image</FormLabel>
@@ -153,9 +171,9 @@ const [profileImage, setProfileImage] = useState<string | null>(null);
                         className="relative p-3 flex items-center justify-center w-40 h-40 bg-[#F8F8F8] text-[#188290] rounded-full cursor-pointer"
                       >
                         <div className='bg-[#1882901C] w-full h-full rounded-full items-center flex justify-center'>
-                          {profileImage ? (
+                          {profileShow ? (
                             <img
-                              src={profileImage}
+                              src={profileShow}
                               alt="Profile"
                               className="absolute inset-0 w-full h-full object-cover rounded-full"
                             />
