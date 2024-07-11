@@ -35,7 +35,7 @@ const HeroSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex(prevIndex => (prevIndex + 1) % paragraphs.length);
-    }, 3000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [paragraphs.length]);
