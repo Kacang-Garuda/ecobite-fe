@@ -338,10 +338,10 @@ const RegisterInstitution: React.FC<RegisterInstitutionProps> = ({ onBack }) => 
             <div className="w-full flex justify-center items-center">
               <button
                 type="submit"
-                className={`bg-[#188190] text-white py-4 rounded-lg w-2/4 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`px-6 py-3 w-max flex self-center font-semibold text-white rounded-lg ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-[#188290] hover:bg-[#02353C]'}`}
                 disabled={loading}
               >
-                {loading ? 'Registering...' : 'Sign Up'}
+                {loading ? 'Creating Your Account...' : 'Create Your Account'}
               </button>
             </div>
           </form>
