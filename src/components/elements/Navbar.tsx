@@ -83,15 +83,7 @@ const Navbar: React.FC = () => {
                 >
                   <div className='font-normal'>
                     <a href="/profile/myfood" className={`flex items-center p-2 hover:bg-gray-100 ${getMenuItemClass('/profile/myfood')}`}>
-                      <img src="/images/basket.svg" alt="Basket" className='pr-2 w-6' />My Food
-                    </a>
-                    <hr />
-                    <a href="/profile/mydonation" className={`flex items-center p-2 hover:bg-gray-100 ${getMenuItemClass('/profile/mydonation')}`}>
-                      <img src="/images/hand.svg" alt="Hand" className='pr-2 w-6' />My Donation
-                    </a>
-                    <hr />
-                    <a href="/profile/editprofile" className={`flex items-center p-2 hover:bg-gray-100 ${getMenuItemClass('/profile/editprofile')}`}>
-                      <img src="/images/person.svg" alt="Person" className='pr-2 w-6' />Edit Profile
+                      <img src="/images/people-icon.svg" alt="Basket" className='pr-2 w-6' />Dashboard
                     </a>
                     <hr />
                     <a href="#" className='flex items-center p-2 text-[#EB5757] hover:bg-gray-100' onClick={handleSignOut}>

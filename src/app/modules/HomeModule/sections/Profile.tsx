@@ -4,7 +4,7 @@ const Profile = () => {
 return (
   <div className='relative flex flex-col w-full h-max bg-white'>
     <div className='flex flex-col px-36 py-24 items-center gap-[4.75rem]'>
-        <p className='text-[#8B8989] text-7xl font-bold'>From Spare to Share with Ecobite</p>
+        <p className='text-[#2EAF7D] text-7xl font-bold'>From Spare to Share with Ecobite</p>
         <div className='flex flex-row w-full gap-[5.75rem]'>
             <img src="/images/home/ecobite-logo-lg.svg" alt="Ecobite Logo" />
             <p className='text-3xl font-medium'>
