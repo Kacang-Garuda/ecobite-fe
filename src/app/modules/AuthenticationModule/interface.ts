@@ -93,6 +93,7 @@ export interface User {
     isInstitution: boolean;
     name: string;
     phone: string;
+    profileImage: string;
     description?: string;
     qris?: string;
     isEmailVerified: boolean;

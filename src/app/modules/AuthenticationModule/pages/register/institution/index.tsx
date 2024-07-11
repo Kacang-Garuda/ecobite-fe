@@ -22,7 +22,7 @@ const MAX_FILE_SIZE = 50000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpg", "image/png"];
 
 const institutionSchema = z.object({
-  profile: z
+  profileImage: z
     .any()
     .refine((file) => file !== null, { message: "Please select a file" })
     .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 50MB.`)
@@ -73,7 +73,7 @@ const RegisterInstitution: React.FC<RegisterInstitutionProps> = ({ onBack }) => 
   const form = useForm<z.infer<typeof institutionSchema>>({
     resolver: zodResolver(institutionSchema),
     defaultValues: {
-      profile: null,
+      profileImage: null,
       email: '',
       password: '',
       name: '',
@@ -110,7 +110,7 @@ const RegisterInstitution: React.FC<RegisterInstitutionProps> = ({ onBack }) => 
           const { token, userLoggedIn } = response.data.data;
 
           Cookies.set('token', token);
-          setUser(userLoggedIn.user);
+          setUser(userLoggedIn);
 
           if (response.data.code === 201) {
             await axios.post('http://localhost:3001/api/auth/send-email-verification', userLoggedIn, {
@@ -145,7 +145,7 @@ const RegisterInstitution: React.FC<RegisterInstitutionProps> = ({ onBack }) => 
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       setProfileFileName(file.name);
-      form.setValue('profile', file);
+      form.setValue('profileImage', file);
 
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -180,7 +180,7 @@ const RegisterInstitution: React.FC<RegisterInstitutionProps> = ({ onBack }) => 
           <form onSubmit={form.handleSubmit(onSubmit)} className='w-full gap-6 flex flex-col font-normal'>
             <FormField 
               control={form.control}
-              name="profile"
+              name="profileImage"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className='text-[#333] flex justify-center'>Profile Image</FormLabel>
@@ -338,10 +338,10 @@ const RegisterInstitution: React.FC<RegisterInstitutionProps> = ({ onBack }) => 
             <div className="w-full flex justify-center items-center">
               <button
                 type="submit"
-                className={`bg-[#188190] text-white py-4 rounded-lg w-2/4 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`px-6 py-3 w-max flex self-center font-semibold text-white rounded-lg ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-[#188290] hover:bg-[#02353C]'}`}
                 disabled={loading}
               >
-                {loading ? 'Registering...' : 'Sign Up'}
+                {loading ? 'Creating Your Account...' : 'Create Your Account'}
               </button>
             </div>
           </form>
