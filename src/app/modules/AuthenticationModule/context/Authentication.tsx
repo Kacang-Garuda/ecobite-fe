@@ -38,8 +38,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const token = Cookies.get('token');
       
       if (token) {
+        setIsLoading(true)
         try {
-          setIsLoading(true)
           const response = await axios.get('http://localhost:3001/api/auth/', {
             headers: {
               'Authorization': `Bearer ${token}`
