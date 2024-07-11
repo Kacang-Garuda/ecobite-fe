@@ -1,27 +1,40 @@
+type Category = 'STAPLES' | 'BEVERAGES' | 'CONDIMENTS' | 'SNACKS' | 'CANNED_FOOD' | 'DRIED_FOOD';
+type FoodDonationProgressType = 'POSTED' | 'BOOKED' | 'PICKED UP'
 
 export interface FoodDonation {
     id: string;
     title: string;
     description: string;
-    category: string;
+    category: Category;
     isInstitution: boolean;
     imageUrl: string;
     quantity: number;
-    expiredDate: string;
+    remainingQuantity: number;
+    expiredDate: Date;
     instruction: string;
     location: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
     userEmail: string;
     transaction: Transaction[];
+    progress: FoodDonationProgress[];
+}
+
+export interface FoodDonationProgress {
+    id: string;
+    status: FoodDonationProgressType;
+    by: string;
+    createdAt: Date;
+    updatedAt: Date
+    foodDonationId: string;
 }
 
 export interface Transaction {
     id: string;
     quantity: number;
     notes: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
     donorEmail: string;
     recipientEmail: string;
     foodDonationId: string;
@@ -30,36 +43,48 @@ export interface Transaction {
 export interface MoneyDonation {
     id: string;
     payment: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
     donorEmail: string;
     recipientEmail: string;
-    progress: Progress[];
+    progress: MoneyDonationProgress[];
 }
 
-export interface Progress {
+type MoneyDonationProgressType = 'PENDING' | 'CONFIRMED' | 'PURCHASED' | 'DISTRIBUTED'
+
+export interface MoneyDonationProgress {
     id: string;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
+    status: MoneyDonationProgressType;
+    createdAt: Date;
+    updatedAt: Date;
     moneyDonationId: string;
+}
+
+export interface Event {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    registeredUser: RegisteredEvent[];
+    userEmail: string;
 }
 
 export interface RegisteredEvent {
     id: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
     eventId: string;
     userEmail: string;
 }
 
+type TokenType = 'AUTHENTICATION' | 'VERIFY_EMAIL'
+
 export interface Token {
     token: string;
-    type: string;
+    type: TokenType;
     isExpired: boolean;
-    expiredAt: string;
-    createdAt: string;
-    updatedAt: string;
+    expiredAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
     userEmail: string;
 }
 
@@ -71,8 +96,8 @@ export interface User {
     description?: string;
     qris?: string;
     isEmailVerified: boolean;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
     
     token: Token[];
     foodDonation: FoodDonation[];

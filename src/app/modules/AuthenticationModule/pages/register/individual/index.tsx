@@ -94,7 +94,7 @@ const [profileImage, setProfileImage] = useState<string | null>(null);
           })
           console.log(sendVerification.data)
           if(sendVerification.data.code == 200) {
-            router.push('/email-confirmation')
+            router.push('/verification')
           }
         }
     } catch(error: any) {
