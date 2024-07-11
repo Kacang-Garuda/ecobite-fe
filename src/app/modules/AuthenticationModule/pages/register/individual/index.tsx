@@ -18,17 +18,17 @@ import Cookies from 'js-cookie';
 import { useAuth } from '../../../context/Authentication';
 
 const MAX_FILE_SIZE = 50000000;
-const ACCEPTED_IMAGE_TYPES = ["image/jpg", "image/png"];
+const ACCEPTED_IMAGE_TYPES = ["image/jpg", "image/jpeg", "image/png"];
 
 const individualSchema = z.object({
   profileImage: z
-  .any()
-  .refine((file) => file !== null, { message: "Please select a file" })
-  .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 50MB.`)
-  .refine(
-    (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-    "Only .jpg and .png formats are supported."
-  ),
+    .any()
+    .refine((file) => file !== null, { message: "Please select a file" })
+    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 50MB.`)
+    .refine(
+      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+      "Only .jpg and .png formats are supported."
+    ),
   email: z
     .string()
     .min(1, { message: "Please enter a valid input" })
@@ -44,12 +44,12 @@ const individualSchema = z.object({
     .min(1, { message: "Please enter a valid input" })
     .max(20, { message: "Please enter a valid input" }),
   isInstitution: z
-  .boolean()
+    .boolean()
 });
 
 interface RegisterIndividualProps {
-    onBack: () => void;
-}  
+  onBack: () => void;
+}
 
 const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
   const { setUser, isLoggedIn } = useAuth();
@@ -81,6 +81,7 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
     try {
       setLoading(true);
       setErrorMessage('');
+      console.log('Loading set to true');
 
       const reader = new FileReader();
       reader.onloadend = async () => {
@@ -92,13 +93,13 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
 
         try {
           const response = await axios.post('http://localhost:3001/api/auth/register', updatedData, {})
-          const { token, userLoggedIn } = response.data.data;
+          const { token, user } = response.data.data;
 
           Cookies.set('token', token);
-          setUser(userLoggedIn);
+          setUser(user);
 
           if (response.data.code === 201) {
-            const sendVerification = await axios.post('http://localhost:3001/api/auth/send-email-verification', userLoggedIn, {
+            const sendVerification = await axios.post('http://localhost:3001/api/auth/send-email-verification', user, {
               headers: {
                 'Authorization': `Bearer ${token}`
               }
@@ -115,14 +116,15 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
           }
         } finally {
           setLoading(false);
+          console.log('Loading set to false');
         }
       };
 
       reader.readAsDataURL(data.profileImage);
     } catch (error: any) {
       console.error('Error processing form', error);
-    } finally {
       setLoading(false);
+      console.log('Loading set to false');
     }
   };
 
@@ -158,7 +160,7 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='w-full gap-6 flex flex-col font-normal'>
-            <FormField 
+            <FormField
               control={form.control}
               name="profileImage"
               render={({ field }) => (
@@ -205,7 +207,7 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
                 <FormItem>
                   <FormLabel className='text-[#333]'>Email</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder='Enter your email'/>
+                    <Input {...field} placeholder='Enter your email' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -249,7 +251,7 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
                 <FormItem>
                   <FormLabel className='text-[#333]'>Full Name</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder='Enter your full name'/>
+                    <Input {...field} placeholder='Enter your full name' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -262,7 +264,7 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
                 <FormItem>
                   <FormLabel className='text-[#333]'>Phone Number</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder='Enter your phone number'/>
+                    <Input {...field} placeholder='Enter your phone number' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
