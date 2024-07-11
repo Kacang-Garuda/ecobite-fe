@@ -70,7 +70,7 @@ const LoginPage = () => {
       const { token, userLoggedIn } = response.data.data;
       
       Cookies.set('token', token);
-      setUser(response.data.data.user);
+      setUser(userLoggedIn);
       setIsLoggedIn(true);
 
       if (rememberMe) {

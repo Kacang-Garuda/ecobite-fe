@@ -118,7 +118,7 @@ const RegisterInstitution: React.FC<RegisterInstitutionProps> = ({ onBack }) => 
                 'Authorization': `Bearer ${token}`
               }
             });
-            router.push('/email-confirmation');
+            router.push('/verification');
           }
         } catch (error: any) {
           if (error.response && error.response.data && error.response.data.code === 400) {
