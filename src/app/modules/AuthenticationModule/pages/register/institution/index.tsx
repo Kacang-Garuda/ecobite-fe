@@ -19,7 +19,7 @@ import { useAuth } from '../../../context/Authentication';
 import { Textarea } from '@/components/ui/textarea';
 
 const MAX_FILE_SIZE = 50000000;
-const ACCEPTED_IMAGE_TYPES = ["image/jpg", "image/png"];
+const ACCEPTED_IMAGE_TYPES = ["image/jpg", "image/jpeg", "image/png"];
 
 const institutionSchema = z.object({
   profileImage: z
@@ -92,45 +92,52 @@ const RegisterInstitution: React.FC<RegisterInstitutionProps> = ({ onBack }) => 
     }
   }, [isLoggedIn, router]);
 
+  const convertFileToBase64 = (file: File) => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  };
+
   const onSubmit = async (data: z.infer<typeof institutionSchema>) => {
     try {
       setLoading(true);
       setErrorMessage('');
-      const reader = new FileReader();
+      
+      const profileImageBase64 = await convertFileToBase64(data.profileImage);
+      const qrisBase64 = await convertFileToBase64(data.qris);
 
-      reader.onloadend = async () => {
-        const base64String = reader.result;
-        const updatedData = {
-          ...data,
-          qris: base64String,
-        };
-
-        try {
-          const response = await axios.post('http://localhost:3001/api/auth/register', updatedData, {})
-          const { token, userLoggedIn } = response.data.data;
-
-          Cookies.set('token', token);
-          setUser(userLoggedIn);
-
-          if (response.data.code === 201) {
-            await axios.post('http://localhost:3001/api/auth/send-email-verification', userLoggedIn, {
-              headers: {
-                'Authorization': `Bearer ${token}`
-              }
-            });
-            router.push('/verification');
-          }
-        } catch (error: any) {
-          if (error.response && error.response.data && error.response.data.code === 400) {
-            setErrorMessage('Email Already Used');
-          } else {
-            console.error('Error submitting form', error);
-          }
-        }
+      const updatedData = {
+        ...data,
+        profileImage: profileImageBase64,
+        qris: qrisBase64,
       };
 
-      reader.readAsDataURL(data.qris);
-    } catch(error) {
+      try {
+        const response = await axios.post('http://localhost:3001/api/auth/register', updatedData, {})
+        const { token, user } = response.data.data;
+
+        Cookies.set('token', token);
+        setUser(user);
+
+        if (response.data.code === 201) {
+          await axios.post('http://localhost:3001/api/auth/send-email-verification', user, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          router.push('/verification');
+        }
+      } catch (error: any) {
+        if (error.response && error.response.data && error.response.data.code === 400) {
+          setErrorMessage('Email Already Used');
+        } else {
+          console.error('Error submitting form', error);
+        }
+      }
+    } catch (error) {
       console.error('Error submitting form', error)
     } finally {
       setLoading(false);

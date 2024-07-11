@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { isLoggedIn, user, setIsLoggedIn, setUser } = useAuth();
+  const { isLoggedIn, user, setIsLoggedIn, setUser, isLoading } = useAuth();
 
   const handleNavigation = (path: string) => {
     if (pathname !== path) {
@@ -67,7 +67,7 @@ const Navbar: React.FC = () => {
           </div>
         </div>
         <div className='inline-flex items-start gap-6 font-semibold'>
-          {isLoggedIn && user ? (
+          {isLoading ? <></>: isLoggedIn && user  ? (
             <div
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
@@ -82,8 +82,8 @@ const Navbar: React.FC = () => {
                   className='absolute right-0 w-full bg-white border border-gray-200 rounded-md shadow-lg'
                 >
                   <div className='font-normal'>
-                    <a href="/profile/myfood" className={`flex items-center p-2 hover:bg-gray-100 ${getMenuItemClass('/profile/myfood')}`}>
-                      <img src="/images/people-icon.svg" alt="Basket" className='pr-2 w-6' />Dashboard
+                    <a href="/dashboard" className={`flex items-center p-2 hover:bg-gray-100 ${getMenuItemClass('/profile/myfood')}`}>
+                      <img src="/images/people-icon.svg" alt="People Icon" className='pr-2 w-6' />Dashboard
                     </a>
                     <hr />
                     <a href="#" className='flex items-center p-2 text-[#EB5757] hover:bg-gray-100' onClick={handleSignOut}>

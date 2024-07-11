@@ -6,10 +6,13 @@ const CoreValues = () => {
       <p className="font-bold text-[#2EAF7D] text-8xl max-w-lg flex self-center">Our Core Values</p>   
       <div className="relative  flex justify-center items-center group core-values-container">
         <img src="/images/home/sustainability.svg" alt="Sustainability Img" className="w-full  transition-opacity duration-700 group-hover:opacity-0" />
-        <img src="/images/home/sustainability-hover.svg" alt="Sustainability Hover Img" className="w-full absolute  transition-opacity duration-700 opacity-0 group-hover:opacity-100" />
+        <div className="w-full absolute  transition-opacity duration-700 opacity-0 group-hover:opacity-100">
+          <p>Sustainability</p>
+          <p>Reduce food waste and promote enviromentally friendly practices</p>
+        </div>
       </div>
       <div className="relative  flex justify-center items-center group core-values-container">
-        <img src="/images/home/volunteerism.svg" alt="Volunteerism Img" className="w-full  transition-opacity duration-700 group-hover:opacity-0" />
+        <img src="/images/home/volunteerism.svg" alt="Volunteerism Img" className="w-full justify-center items-center transition-opacity duration-700 group-hover:opacity-0" />
         <img src="/images/home/volunteerism-hover.svg" alt="Volunteerism Hover Img" className="w-full  absolute transition-opacity duration-700 opacity-0 group-hover:opacity-100" />
       </div>
       <div className="relative  flex justify-center items-center group core-values-container hover:pr-8 hover:pl-8 pr-16 ">

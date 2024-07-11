@@ -11,6 +11,8 @@ interface AuthenticationContextType {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AuthenticationContext = createContext<AuthenticationContextType | undefined>(undefined);
@@ -28,14 +30,16 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       const token = Cookies.get('token');
-
+      
       if (token) {
         try {
+          setIsLoading(true)
           const response = await axios.get('http://localhost:3001/api/auth/', {
             headers: {
               'Authorization': `Bearer ${token}`
@@ -51,6 +55,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           console.error('Failed to fetch user data', error);
           setIsLoggedIn(false);
           setUser(null);
+        } finally {
+          setIsLoading(false);
         }
       }
     };
@@ -61,7 +67,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   return (
     <AuthenticationContext.Provider value={{ 
       user, setUser,
-      isLoggedIn, setIsLoggedIn
+      isLoggedIn, setIsLoggedIn,
+      isLoading, setIsLoading,
     }}>
       {children}
     </AuthenticationContext.Provider>

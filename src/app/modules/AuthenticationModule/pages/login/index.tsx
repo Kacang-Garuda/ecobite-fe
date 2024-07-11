@@ -67,10 +67,10 @@ const LoginPage = () => {
       setLoading(true);
       setErrorMessage('');
       const response = await axios.post('http://localhost:3001/api/auth/login', data);
-      const { token, userLoggedIn } = response.data.data;
+      const { token, user } = response.data.data;
       
       Cookies.set('token', token);
-      setUser(userLoggedIn);
+      setUser(user);
       setIsLoggedIn(true);
 
       if (rememberMe) {
