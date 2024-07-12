@@ -7,7 +7,7 @@ type Category =
   | 'DRIED_FOOD'
 type FoodDonationProgressType = 'POSTED' | 'BOOKED' | 'PICKED UP'
 
-export interface FoodDonation {
+export interface  FoodDonation {
   id: string
   title: string
   description: string
@@ -30,9 +30,11 @@ export interface FoodDonation {
 export interface FoodDonationProgress {
   id: string
   status: FoodDonationProgressType
-  by: string
   createdAt: Date
   updatedAt: Date
+  quantity: number;
+  userEmail: string;
+  user: User
   foodDonationId: string
 }
 
@@ -46,6 +48,7 @@ export interface Transaction {
   donorEmail: string
   recipientEmail: string
   foodDonationId: string
+  donor: User
   foodDonation: FoodDonation
 }
 
@@ -85,7 +88,7 @@ export interface Event {
   image: string
   createdAt: Date
   updatedAt: Date
-  registeredUser: RegisteredEvent[]
+  registeredUsers: RegisteredEvent[]
   userEmail: string
   user: User
 }
@@ -135,4 +138,5 @@ export interface User {
   receiveMoney: MoneyDonation[]
   events: Event[]
   registeredEvents: RegisteredEvent[]
+  foodDonationProgress: FoodDonationProgress[]
 }
