@@ -27,7 +27,6 @@ export default function DonationDetailsPage({
               Authorization: `Bearer ${token}`,
             },
           })
-          console.log(response.data.data)
           setUser(response.data.data)
         } catch (error) {
           console.error('Failed to fetch user data', error)

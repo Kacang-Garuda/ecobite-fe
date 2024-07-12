@@ -28,7 +28,6 @@ const ManageEvent: React.FC<ManageEventProps> = ({ setActivePage }) => {
               },
             }
           )
-          console.log(response.data)
           setEvent(response.data.data)
         } catch (error) {
           console.error('Failed to fetch user data', error)

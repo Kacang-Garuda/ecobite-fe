@@ -53,7 +53,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             },
           })
 
-          console.log(response.data.data)
           if (response.data) {
             setIsLoggedIn(true)
             setUser(response.data.data)

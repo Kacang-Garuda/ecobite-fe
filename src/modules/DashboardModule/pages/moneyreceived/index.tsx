@@ -78,7 +78,6 @@ const MoneyReceived = () => {
 
     const handleSubmitChanges = async () => {
         const checkedIds = Object.keys(checkedItems).filter((key) => checkedItems[key]);
-        console.log(checkedIds)
         try {
             await axios.patch(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/money-donation/`,

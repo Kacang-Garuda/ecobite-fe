@@ -41,7 +41,6 @@ const ManageVolunteerCard: React.FC<VolunteerCardProps> = ({
             },
         }
         );
-        console.log('delete', response.data)
     } catch (error) {
         console.error('Failed to fetch user data', error);
     } finally {

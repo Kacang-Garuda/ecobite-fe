@@ -129,8 +129,6 @@ const EditProfileInstitutionPage = () => {
           delete updatedData.qris
         }
 
-        console.log('Sending updated data:', updatedData)
-
         const response = await axios.patch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/auth/`,
           updatedData,
@@ -140,7 +138,6 @@ const EditProfileInstitutionPage = () => {
             },
           }
         )
-        console.log('Response from server:', response.data)
         setUser(response.data.data)
       } catch (error) {
         console.error('Error submitting form', error)
@@ -148,8 +145,6 @@ const EditProfileInstitutionPage = () => {
         setLoading(false)
         router.push('/')
       }
-    } else {
-      console.log('No token found')
     }
   }
 
