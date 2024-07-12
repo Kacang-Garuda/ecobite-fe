@@ -8,6 +8,7 @@ interface CardProps {
   nama: string
   description: string
   status: string
+  recipient: string
 }
 
 const FoodCard: React.FC<CardProps> = ({
@@ -16,6 +17,7 @@ const FoodCard: React.FC<CardProps> = ({
   nama,
   description,
   status,
+  recipient
 }) => {
   return (
     <div className="px-5 py-4 card-element w-max h-max flex flex-col items-center gap-4">
@@ -31,13 +33,13 @@ const FoodCard: React.FC<CardProps> = ({
             <button
               className={`flex px-2 py-2 justify-center items-center gap-2.5 text-xs rounded-lg font-semibold bg-[#E6C722] text-white`}
             >
-              Booked
+              Booked by {recipient}
             </button>
           ) : (
             <button
               className={`flex px-2 py-2 justify-center items-center gap-2.5 text-xs rounded-lg font-semibold bg-[#C1F6ED] text-[#333333]`}
             >
-              Posted
+              Food Posted
             </button>
           )}
         </div>

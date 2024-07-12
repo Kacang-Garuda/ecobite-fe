@@ -7,7 +7,7 @@ type Category =
   | 'DRIED_FOOD'
 type FoodDonationProgressType = 'POSTED' | 'BOOKED' | 'PICKED UP'
 
-export interface FoodDonation {
+export interface  FoodDonation {
   id: string
   title: string
   description: string
@@ -45,6 +45,7 @@ export interface Transaction {
   donorEmail: string
   recipientEmail: string
   foodDonationId: string
+  donor: User
   foodDonation: FoodDonation
 }
 

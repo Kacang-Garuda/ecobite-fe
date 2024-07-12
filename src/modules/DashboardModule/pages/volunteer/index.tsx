@@ -1,4 +1,4 @@
-import { Transaction } from '@/modules/AuthenticationModule/interface'
+import { RegisteredEvent, Transaction } from '@/modules/AuthenticationModule/interface'
 import FoodCard from '@/components/elements/DashboardElements/FoodCard'
 import NullFood from '@/components/elements/DashboardElements/NullFood'
 import axios from 'axios'
@@ -9,7 +9,32 @@ import { useAuth } from '@/modules/AuthenticationModule/context/Authentication'
 import MyVolunteerCard from '@/components/elements/DashboardElements/MyVolunteerCard'
 
 const VolunteerLandingPage = () => {
-  const { user } = useAuth()
+  const [volunteerList, setVolunteerList] = useState<RegisteredEvent[] | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = Cookies.get('token');
+
+      if (token) {
+        try {
+          const response = await axios.get(
+            'http://localhost:3001/api/event/volunteer/',
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          setVolunteerList(response.data.data);
+        } catch (error) {
+          console.error('Failed to fetch user data', error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
   return (
     <div className="relative flex flex-col flex-grow items-center justify-center bg-white px-16 py-6 font-bold">
       <div className="w-full flex flex-row justify-center relative py-4">
@@ -17,18 +42,20 @@ const VolunteerLandingPage = () => {
           <p className="text-3xl text-[#02353C]">Volunteer</p>
         </div>
       </div>
-      {user?.registeredEvents && user.registeredEvents.length > 0 ? (
-        <div className="flex flex-wrap gap-5 justify-start">
-          {user.registeredEvents.map((value, index) => (
-            <MyVolunteerCard
-              key={index}
-              id={value.id}
-              img={value.event.image}
-              title={value.event.title}
-              city={value.event.city}
-              date={format(value.createdAt, 'dd/MM/yyyy')}
-              status={value.status}
-            />
+      {volunteerList && volunteerList.length > 0 ? (
+        <div className="flex flex-col w-full gap-5 justify-start">
+          {volunteerList.map((value, index) => (
+            value.event ? (
+              <MyVolunteerCard
+                key={index}
+                id={value.id}
+                img={value.event.image}
+                title={value.event.title}
+                city={value.event.city}
+                date={format(new Date(value.createdAt), 'dd/MM/yyyy')}
+                status={value.status}
+              />
+            ) : null
           ))}
         </div>
       ) : (
