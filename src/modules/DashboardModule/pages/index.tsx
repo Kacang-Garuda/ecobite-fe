@@ -10,6 +10,7 @@ import MyFoodInstitution from './myfood/institution'
 import IndividualSidebar from '@/components/elements/DashboardElements/IndividualSidebar'
 import InstitutionSidebar from '@/components/elements/DashboardElements/InstitutionSidebar'
 import VolunteerLandingPage from './volunteer/index'
+import CreateEvent from './event/createevent'
 
 const DashboardLandingPage = () => {
   const { user, isLoading } = useAuth()
@@ -90,7 +91,7 @@ const DashboardLandingPage = () => {
       case 'volunteer':
         return <VolunteerLandingPage />
       case 'createEvent':
-        return <div>create event</div>
+        return <CreateEvent />
       case 'manageEvent':
         return <div>manage event</div>
       case 'moneyReceived':
