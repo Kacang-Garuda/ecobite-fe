@@ -64,18 +64,31 @@ export interface MoneyDonationProgress {
 
 export interface Event {
     id: string;
+    title:string;
+    date: Date;
+    city: string;
+    location: string;
+    description: string;
+    jobDescription: string;
+    benefit: string;
+    image: string;
     createdAt: Date;
     updatedAt: Date;
     registeredUser: RegisteredEvent[];
     userEmail: string;
 }
 
+type RegisteredEventType = 'PENDING' | 'REJECTED' | 'ACCEPTED'
+
 export interface RegisteredEvent {
     id: string;
+    reason: string;
+    status: RegisteredEventType;
     createdAt: Date;
     updatedAt: Date;
     eventId: string;
     userEmail: string;
+    event: Event;
 }
 
 type TokenType = 'AUTHENTICATION' | 'VERIFY_EMAIL'

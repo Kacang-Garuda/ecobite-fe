@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import NavLink from './NavLink';
-import { useAuth } from '@/app/modules/AuthenticationModule/context/Authentication';
+import { useAuth } from '@/modules/AuthenticationModule/context/Authentication';
 
 const Navbar: React.FC = () => {
   const pathname = usePathname();

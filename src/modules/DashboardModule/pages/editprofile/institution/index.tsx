@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { useAuth } from '@/app/modules/AuthenticationModule/context/Authentication';
+import { useAuth } from '@/modules/AuthenticationModule/context/Authentication';
 
 const MAX_FILE_SIZE = 50000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpg", "image/png"];
