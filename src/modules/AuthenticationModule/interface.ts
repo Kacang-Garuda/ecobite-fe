@@ -22,6 +22,7 @@ export interface FoodDonation {
   createdAt: Date
   updatedAt: Date
   userEmail: string
+  user: User
   transaction: Transaction[]
   progress: FoodDonationProgress[]
 }
