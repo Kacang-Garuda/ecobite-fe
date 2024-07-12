@@ -34,7 +34,7 @@ const ManageVolunteerCard: React.FC<VolunteerCardProps> = ({
     if (token) {
     try {
         const response = await axios.delete(
-        `http://localhost:3001/api/event/${id}/`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/event/${id}/`,
         {
             headers: {
             Authorization: `Bearer ${token}`,

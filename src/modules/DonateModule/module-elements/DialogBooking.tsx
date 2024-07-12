@@ -52,7 +52,7 @@ const DialogBooking = ({
       const token = Cookies.get('token')
       if (token) {
         const response = await axios.post(
-          `http://localhost:3001/api/food-donation/book/${donationId}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/food-donation/book/${donationId}`,
           values,
           {
             headers: { Authorization: `Bearer ${token}` },

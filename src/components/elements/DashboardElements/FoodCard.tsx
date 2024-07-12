@@ -33,7 +33,7 @@ const FoodCard: React.FC<CardProps> = ({
     if (token) {
       try {
         const response = await axios.patch(
-          `http://localhost:3001/api/food-donation/picked-up/${id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/food-donation/picked-up/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

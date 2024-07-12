@@ -78,7 +78,7 @@ const FormSection = ({ category }: { category: categoryType }) => {
       const token = Cookies.get('token')
       if (token) {
         await axios.post(
-          'http://localhost:3001/api/food-donation',
+          `${process.env.NEXT_PUBLIC_API_URL}/api/food-donation`,
           updatedData,
           { headers: { Authorization: `Bearer ${token}` } }
         )
@@ -114,7 +114,7 @@ const FormSection = ({ category }: { category: categoryType }) => {
 
     if (token) {
       const response = await axios.get(
-        'http://localhost:3001/api/food-donation/institution',
+        `${process.env.NEXT_PUBLIC_API_URL}/api/food-donation/institution`,
         { headers: { Authorization: `Bearer ${token}` } }
       )
 

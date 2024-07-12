@@ -53,7 +53,7 @@ const MoneyDonationForm = ({ params }: { params: { email: string } }) => {
     try {
       const token = Cookies.get('token')
       if (token) {
-        await axios.post('http://localhost:3001/api/money-donation', data, {
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/money-donation`, data, {
           headers: { Authorization: `Bearer ${token}` },
         })
 
@@ -87,7 +87,7 @@ const MoneyDonationForm = ({ params }: { params: { email: string } }) => {
     const token = Cookies.get('token')
     if (token) {
       const response = await axios.get(
-        `http://localhost:3001/api/money-donation/${params.email}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/money-donation/${params.email}`,
         { headers: { Authorization: `Bearer ${token}` } }
       )
 

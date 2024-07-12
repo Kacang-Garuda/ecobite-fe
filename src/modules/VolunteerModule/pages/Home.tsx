@@ -17,7 +17,7 @@ const VolunteerHome = () => {
     const token = Cookies.get('token')
 
     if (token) {
-      const response = await axios.get('http://localhost:3001/api/event', {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/event`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 

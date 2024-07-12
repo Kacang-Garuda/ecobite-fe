@@ -71,7 +71,7 @@ const EditEvent: React.FC<EditEventProps> = ({ id }) => {
       if (token) {
         try {
           const response = await axios.get(
-            `http://localhost:3001/api/event/${id}`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/event/${id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -146,7 +146,7 @@ const EditEvent: React.FC<EditEventProps> = ({ id }) => {
         }
 
         const response = await axios.patch(
-          `http://localhost:3001/api/event/${id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/event/${id}`,
           updatedData,
           {
             headers: {

@@ -83,7 +83,7 @@ const Confirmation = ({
       const token = Cookies.get('token')
       if (token) {
         await axios.post(
-          'http://localhost:3001/api/event/regist',
+          `${process.env.NEXT_PUBLIC_API_URL}/api/event/regist`,
           { reason, eventId },
           {
             headers: { Authorization: `Bearer ${token}` },

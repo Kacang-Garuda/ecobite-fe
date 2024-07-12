@@ -18,7 +18,7 @@ export default function DonationDetailsPage({
 
       if (token) {
         try {
-          const response = await axios.get(`http://localhost:3001/api/food-donation/${params.donationId}`, {
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/food-donation/${params.donationId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

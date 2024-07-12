@@ -33,7 +33,7 @@ const EmailVerification = () => {
       const token = Cookies.get('token')
       if (token && user) {
         const sendVerification = await axios.post(
-          'http://localhost:3001/api/auth/send-email-verification',
+          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/send-email-verification`,
           user,
           {
             headers: {
