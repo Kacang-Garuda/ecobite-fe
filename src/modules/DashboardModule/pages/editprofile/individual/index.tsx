@@ -1,8 +1,8 @@
-'use client'
-import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
+"use client";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -10,36 +10,36 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { useRouter } from 'next/navigation'
-import axios from 'axios'
-import Cookies from 'js-cookie'
-import { useAuth } from '@/app/modules/AuthenticationModule/context/Authentication'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { useAuth } from "@/modules/AuthenticationModule/context/Authentication";
 
-const MAX_FILE_SIZE = 50000000
-const ACCEPTED_IMAGE_TYPES = ['image/jpg', 'image/jpeg', 'image/png']
+const MAX_FILE_SIZE = 50000000;
+const ACCEPTED_IMAGE_TYPES = ["image/jpg", "image/jpeg", "image/png"];
 
 const individualSchema = z.object({
   profileImage: z
     .any()
-    .refine((file) => file !== null, { message: 'Please select a file' })
+    .refine((file) => file !== null, { message: "Please select a file" })
     .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 50MB.`)
     .refine(
       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-      'Only .jpg and .png formats are supported.'
+      "Only .jpg and .png formats are supported."
     ),
-  name: z.string().min(1, { message: 'Please enter a valid input' }),
+  name: z.string().min(1, { message: "Please enter a valid input" }),
   phone: z
     .string()
-    .min(1, { message: 'Please enter a valid input' })
-    .max(20, { message: 'Please enter a valid input' }),
-})
+    .min(1, { message: "Please enter a valid input" })
+    .max(20, { message: "Please enter a valid input" }),
+});
 
 const EditProfileIndividualPage = () => {
-  const [profileShow, setProfileShow] = useState<string | null>(null)
-  const { user, setUser } = useAuth()
-  const router = useRouter()
+  const [profileShow, setProfileShow] = useState<string | null>(null);
+  const { user, setUser } = useAuth();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof individualSchema>>({
     resolver: zodResolver(individualSchema),
@@ -48,75 +48,75 @@ const EditProfileIndividualPage = () => {
       name: user?.name,
       phone: user?.phone,
     },
-  })
+  });
 
   useEffect(() => {
     if (user?.profileImage) {
-      setProfileShow(user.profileImage)
+      setProfileShow(user.profileImage);
     }
     form.reset({
       profileImage: user?.profileImage,
       name: user?.name,
       phone: user?.phone,
-    })
-  }, [user, form])
+    });
+  }, [user, form]);
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof individualSchema>) => {
-    console.log(data)
-    const token = Cookies.get('token')
+    console.log(data);
+    const token = Cookies.get("token");
     if (token) {
       try {
-        setLoading(true)
+        setLoading(true);
 
-        const reader = new FileReader()
+        const reader = new FileReader();
         reader.onloadend = async () => {
-          const base64String = reader.result as string
+          const base64String = reader.result as string;
           const updatedData = {
             ...data,
             profileImage: base64String,
-          }
+          };
 
           try {
             const response = await axios.patch(
-              'http://localhost:3001/api/auth/',
+              "http://localhost:3001/api/auth/",
               updatedData,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
               }
-            )
-            setUser(response.data.data)
+            );
+            setUser(response.data.data);
           } catch (error) {
-            console.error(error)
+            console.error(error);
           } finally {
-            setLoading(false)
-            router.push('/')
+            setLoading(false);
+            router.push("/");
           }
-        }
+        };
 
-        reader.readAsDataURL(data.profileImage)
+        reader.readAsDataURL(data.profileImage);
       } catch (error: any) {
-        console.error('Error processing form', error)
-        setLoading(false)
+        console.error("Error processing form", error);
+        setLoading(false);
       }
     }
-  }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0]
-      form.setValue('profileImage', file)
+      const file = event.target.files[0];
+      form.setValue("profileImage", file);
 
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileShow(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+        setProfileShow(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   return (
     <div className="flex flex-col relative w-full">
@@ -213,16 +213,20 @@ const EditProfileIndividualPage = () => {
             />
             <button
               type="submit"
-              className={`mt-10 px-10 py-4 w-max flex self-center font-semibold text-white rounded-lg ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-[#188290] hover:bg-[#02353C]'}`}
+              className={`mt-10 px-10 py-4 w-max flex self-center font-semibold text-white rounded-lg ${
+                loading
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-[#188290] hover:bg-[#02353C]"
+              }`}
               disabled={loading}
             >
-              {loading ? 'Saving Your Update...' : 'Save'}
+              {loading ? "Saving Your Update..." : "Save"}
             </button>
           </form>
         </Form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EditProfileIndividualPage
+export default EditProfileIndividualPage;

@@ -1,8 +1,8 @@
-import React from 'react'
-import DashboardLandingPage from '../modules/DashboardModule/pages/index'
+import React from "react";
+import DashboardLandingPage from "../../modules/DashboardModule/pages/index";
 
 const page = () => {
-  return <DashboardLandingPage />
-}
+  return <DashboardLandingPage />;
+};
 
-export default page
+export default page;

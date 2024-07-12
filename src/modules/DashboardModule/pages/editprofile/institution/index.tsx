@@ -1,9 +1,9 @@
-'use client'
-import React, { useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Textarea } from '@/components/ui/textarea'
+"use client";
+import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -12,31 +12,31 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { useRouter } from 'next/navigation'
-import axios from 'axios'
-import Cookies from 'js-cookie'
-import { useAuth } from '@/app/modules/AuthenticationModule/context/Authentication'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { useAuth } from "@/modules/AuthenticationModule/context/Authentication";
 
-const MAX_FILE_SIZE = 50000000
-const ACCEPTED_IMAGE_TYPES = ['image/jpg', 'image/png']
+const MAX_FILE_SIZE = 50000000;
+const ACCEPTED_IMAGE_TYPES = ["image/jpg", "image/png"];
 
 const institutionSchema = z.object({
   profileImage: z
     .any()
-    .refine((file) => file !== null, { message: 'Please select a file' })
+    .refine((file) => file !== null, { message: "Please select a file" })
     .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 50MB.`)
     .refine(
       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-      'Only .jpg and .png formats are supported.'
+      "Only .jpg and .png formats are supported."
     ),
-  name: z.string().min(1, { message: 'Please enter a valid input' }),
+  name: z.string().min(1, { message: "Please enter a valid input" }),
   phone: z
     .string()
-    .min(1, { message: 'Please enter a valid input' })
-    .max(20, { message: 'Please enter a valid input' }),
-  description: z.string().min(5, { message: 'Please enter a valid input' }),
+    .min(1, { message: "Please enter a valid input" })
+    .max(20, { message: "Please enter a valid input" }),
+  description: z.string().min(5, { message: "Please enter a valid input" }),
   qris: z
     .any()
     .optional()
@@ -45,16 +45,16 @@ const institutionSchema = z.object({
         !file ||
         (file.size <= MAX_FILE_SIZE &&
           ACCEPTED_IMAGE_TYPES.includes(file.type)),
-      'Only .jpg and .png formats are supported and max size is 50MB.'
+      "Only .jpg and .png formats are supported and max size is 50MB."
     ),
-})
+});
 
 const EditProfileInstitutionPage = () => {
-  const [profileShow, setProfileShow] = useState<string | null>(null)
-  const { user, setUser } = useAuth()
-  const [fileName, setFileName] = useState('')
-  const [base64String, setBase64String] = useState<string | null>(null)
-  const route = useRouter()
+  const [profileShow, setProfileShow] = useState<string | null>(null);
+  const { user, setUser } = useAuth();
+  const [fileName, setFileName] = useState("");
+  const [base64String, setBase64String] = useState<string | null>(null);
+  const route = useRouter();
   const form = useForm<z.infer<typeof institutionSchema>>({
     resolver: zodResolver(institutionSchema),
     defaultValues: {
@@ -64,11 +64,11 @@ const EditProfileInstitutionPage = () => {
       description: user?.description,
       qris: null,
     },
-  })
+  });
 
   useEffect(() => {
     if (user?.profileImage) {
-      setProfileShow(user.profileImage)
+      setProfileShow(user.profileImage);
     }
     form.reset({
       profileImage: user?.profileImage,
@@ -76,121 +76,121 @@ const EditProfileInstitutionPage = () => {
       phone: user?.phone,
       description: user?.description,
       qris: user?.qris,
-    })
-  }, [user, form])
+    });
+  }, [user, form]);
 
   useEffect(() => {
-    if (user?.qris && user.qris.startsWith('data:image')) {
-      setBase64String(user.qris)
+    if (user?.qris && user.qris.startsWith("data:image")) {
+      setBase64String(user.qris);
     }
-  }, [user?.qris])
+  }, [user?.qris]);
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const convertFileToBase64 = (file: File) => {
     return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = () => resolve(reader.result as string)
-      reader.onerror = (error) => reject(error)
-    })
-  }
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
   const onSubmit = async (data: z.infer<typeof institutionSchema>) => {
-    const token = Cookies.get('token')
+    const token = Cookies.get("token");
     if (token) {
       try {
-        setLoading(true)
-        const updatedData = { ...data }
+        setLoading(true);
+        const updatedData = { ...data };
         if (fileName) {
-          const file = data.qris
-          const reader = new FileReader()
+          const file = data.qris;
+          const reader = new FileReader();
 
           reader.onloadend = async () => {
             const profileImageBase64 = await convertFileToBase64(
               data.profileImage
-            )
-            const qrisBase64 = await convertFileToBase64(data.qris)
+            );
+            const qrisBase64 = await convertFileToBase64(data.qris);
 
             const updatedData = {
               ...data,
               profileImage: profileImageBase64,
               qris: qrisBase64,
-            }
+            };
             const response = await axios.patch(
-              'http://localhost:3001/api/auth/',
+              "http://localhost:3001/api/auth/",
               updatedData,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
               }
-            )
-            setUser(response.data.data)
-          }
-          reader.readAsDataURL(file)
+            );
+            setUser(response.data.data);
+          };
+          reader.readAsDataURL(file);
         } else {
-          delete updatedData.qris
+          delete updatedData.qris;
           const response = await axios.patch(
-            'http://localhost:3001/api/auth/',
+            "http://localhost:3001/api/auth/",
             updatedData,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             }
-          )
-          setUser(response.data.data)
+          );
+          setUser(response.data.data);
         }
       } catch (error) {
-        console.error('Error submitting form', error)
+        console.error("Error submitting form", error);
       } finally {
-        setLoading(false)
-        route.push('/')
+        setLoading(false);
+        route.push("/");
       }
     } else {
-      console.log('error')
+      console.log("error");
     }
-  }
+  };
 
   const handleProfileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0]
-      form.setValue('profileImage', file)
+      const file = event.target.files[0];
+      form.setValue("profileImage", file);
 
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileShow(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+        setProfileShow(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0]
+      const file = event.target.files[0];
       if (
         file.size <= MAX_FILE_SIZE &&
         ACCEPTED_IMAGE_TYPES.includes(file.type)
       ) {
-        setFileName(file.name)
-        form.setValue('qris', file)
-        const reader = new FileReader()
+        setFileName(file.name);
+        form.setValue("qris", file);
+        const reader = new FileReader();
         reader.onloadend = () => {
-          setBase64String(reader.result as string)
-        }
-        reader.readAsDataURL(file)
+          setBase64String(reader.result as string);
+        };
+        reader.readAsDataURL(file);
       } else {
-        form.setError('qris', {
-          type: 'manual',
+        form.setError("qris", {
+          type: "manual",
           message:
             file.size > MAX_FILE_SIZE
-              ? 'Max image size is 5MB.'
-              : 'Only .jpg and .png formats are supported.',
-        })
+              ? "Max image size is 5MB."
+              : "Only .jpg and .png formats are supported.",
+        });
       }
     }
-  }
+  };
 
   return (
     <div className="flex flex-col relative w-full">
@@ -331,10 +331,10 @@ const EditProfileInstitutionPage = () => {
                           />
                           <span
                             className={
-                              fileName ? 'text-black' : 'text-[#828282]'
+                              fileName ? "text-black" : "text-[#828282]"
                             }
                           >
-                            {fileName || 'Browse File'}
+                            {fileName || "Browse File"}
                           </span>
                           <Input
                             id="file-upload"
@@ -362,16 +362,20 @@ const EditProfileInstitutionPage = () => {
             </div>
             <button
               type="submit"
-              className={`mt-10 px-10 py-4 w-max flex self-center font-semibold text-white rounded-lg ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-[#188290] hover:bg-[#02353C]'}`}
+              className={`mt-10 px-10 py-4 w-max flex self-center font-semibold text-white rounded-lg ${
+                loading
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-[#188290] hover:bg-[#02353C]"
+              }`}
               disabled={loading}
             >
-              {loading ? 'Saving Your Update...' : 'Save'}
+              {loading ? "Saving Your Update..." : "Save"}
             </button>
           </form>
         </Form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EditProfileInstitutionPage
+export default EditProfileInstitutionPage;
