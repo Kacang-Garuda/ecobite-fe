@@ -68,21 +68,23 @@ const ManageVolunteerCard: React.FC<VolunteerCardProps> = ({
           {dropdownVisible && (
             <div className="absolute right-0 font-normal w-48 bg-white border border-gray-200 rounded shadow-lg z-10">
               <button
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="flex w-full items-center gap-2 text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex-row"
                 onClick={() => {
                   onEdit();
                   setDropdownVisible(false);
                 }}
               >
+                <img src="/images/dashboard/pencil-icon.svg" alt="Pencil Icon" />
                 Edit Details
               </button>
               <button
-                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                className="flex flex-row items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                 onClick={() => {
                   handleDelete();
                   setDropdownVisible(false);
                 }}
               >
+                <img src="/images/dashboard/trash-icon.svg" alt="Trash Icon" />
                 Delete
               </button>
             </div>
