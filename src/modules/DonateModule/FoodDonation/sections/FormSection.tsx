@@ -42,7 +42,7 @@ const FormSection = ({ category }: { category: categoryType }) => {
     useState(false)
   const [fileName, setFileName] = useState('')
   const [listInstitutionEmail, setListInstitutionEmail] = useState<
-    { email: string }[]
+    { email: string; name: string }[]
   >([])
 
   const router = useRouter()
@@ -200,7 +200,7 @@ const FormSection = ({ category }: { category: categoryType }) => {
                     <SelectItem value="ALL">Everyone</SelectItem>
                     {listInstitutionEmail.map((value) => (
                       <SelectItem key={value.email} value={value.email}>
-                        {value.email}
+                        {value.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
