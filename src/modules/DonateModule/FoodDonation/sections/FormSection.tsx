@@ -62,8 +62,6 @@ const FormSection = ({ category }: { category: categoryType }) => {
     },
   })
 
-  const { isValid } = form.formState
-
   async function onSubmit(values: z.infer<typeof foodDonationSchema>) {
     setIsLoading(true)
 
@@ -339,9 +337,13 @@ const FormSection = ({ category }: { category: categoryType }) => {
               type="button"
               className={`px-6 py-3 w-max flex self-center font-semibold text-white rounded-lg ${isLoading ? 'bg-gray-500 cursor-not-allowed' : 'bg-[#188290] hover:bg-[#02353C]'}`}
               disabled={isLoading}
-              onClick={() =>
-                setIsOpenConfirmationDialog(isValid ? true : false)
-              }
+              onClick={() => {
+                form.trigger().then((isFormValid) => {
+                  if (isFormValid) {
+                    setIsOpenConfirmationDialog(true)
+                  }
+                })
+              }}
             >
               Confirm
             </button>

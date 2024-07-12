@@ -86,6 +86,7 @@ export interface Event {
   updatedAt: Date
   registeredUser: RegisteredEvent[]
   userEmail: string
+  user: User
 }
 
 type RegisteredEventType = 'PENDING' | 'REJECTED' | 'ACCEPTED'

@@ -35,7 +35,7 @@ const FoodDonationForm = ({
         </span>
         <div className="p-10 bg-[#EBB0572E] rounded-[8px]">
           <ReactMarkdown className="markdown">
-            {TEXT.replace(/\n/g, '\n\n')}
+            {TEXT.replaceAll(/\n/g, '\n\n')}
           </ReactMarkdown>
         </div>
       </div>

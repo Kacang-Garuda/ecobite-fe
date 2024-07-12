@@ -14,10 +14,10 @@ const DisplayCard = ({
 }) => {
   return (
     <div
-      className="w-[350px] h-[350px] flex justify-center items-center hover:cursor-pointer"
+      className="w-[350px] h-[350px] flex justify-center items-center hover:cursor-pointer rounded-[8px] overflow-hidden"
       onClick={onClick}
     >
-      <div className="absolute w-[350px] h-[350px] z-[-1]">
+      <div className="absolute w-[350px] h-[350px] z-[-1] rounded-[8px] overflow-hidden">
         <Image
           src={image}
           alt={`${title}-image`}
