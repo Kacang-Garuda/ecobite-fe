@@ -1,8 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod';
-import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Form,
   FormControl,
@@ -10,54 +10,46 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import { useAuth } from '../../../context/Authentication';
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { useRouter } from 'next/navigation'
+import axios from 'axios'
+import Cookies from 'js-cookie'
+import { useAuth } from '../../../context/Authentication'
 
-const MAX_FILE_SIZE = 50000000;
-const ACCEPTED_IMAGE_TYPES = ["image/jpg", "image/jpeg", "image/png"];
+const MAX_FILE_SIZE = 50000000
+const ACCEPTED_IMAGE_TYPES = ['image/jpg', 'image/jpeg', 'image/png']
 
 const individualSchema = z.object({
   profileImage: z
     .any()
-    .refine((file) => file !== null, { message: "Please select a file" })
+    .refine((file) => file !== null, { message: 'Please select a file' })
     .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 50MB.`)
     .refine(
       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-      "Only .jpg and .png formats are supported."
+      'Only .jpg and .png formats are supported.'
     ),
-  email: z
-    .string()
-    .min(1, { message: "Please enter a valid input" })
-    .email(),
-  password: z
-    .string()
-    .min(1, { message: "Please enter a valid input" }),
-  name: z
-    .string()
-    .min(1, { message: "Please enter a valid input" }),
+  email: z.string().min(1, { message: 'Please enter a valid input' }).email(),
+  password: z.string().min(1, { message: 'Please enter a valid input' }),
+  name: z.string().min(1, { message: 'Please enter a valid input' }),
   phone: z
     .string()
-    .min(1, { message: "Please enter a valid input" })
-    .max(20, { message: "Please enter a valid input" }),
-  isInstitution: z
-    .boolean()
-});
+    .min(1, { message: 'Please enter a valid input' })
+    .max(20, { message: 'Please enter a valid input' }),
+  isInstitution: z.boolean(),
+})
 
 interface RegisterIndividualProps {
-  onBack: () => void;
+  onBack: () => void
 }
 
 const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
-  const { setUser, isLoggedIn } = useAuth();
-  const [profileShow, setProfileShow] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const { setUser, isLoggedIn } = useAuth()
+  const [profileShow, setProfileShow] = useState<string | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
   const form = useForm<z.infer<typeof individualSchema>>({
     resolver: zodResolver(individualSchema),
     defaultValues: {
@@ -66,113 +58,136 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
       password: '',
       name: '',
       phone: '',
-      isInstitution: false
-    }
-  });
+      isInstitution: false,
+    },
+  })
 
   useEffect(() => {
-    const token = Cookies.get('token');
+    const token = Cookies.get('token')
     if (token && isLoggedIn) {
-      router.push('/');
+      router.push('/')
     }
-  }, [isLoggedIn, router]);
+  }, [isLoggedIn, router])
 
   const onSubmit = async (data: z.infer<typeof individualSchema>) => {
     try {
-      setLoading(true);
-      setErrorMessage('');
-      console.log('Loading set to true');
+      setLoading(true)
+      setErrorMessage('')
+      console.log('Loading set to true')
 
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onloadend = async () => {
-        const base64String = reader.result as string;
+        const base64String = reader.result as string
         const updatedData = {
           ...data,
           profileImage: base64String,
-        };
+        }
 
         try {
-          const response = await axios.post('http://localhost:3001/api/auth/register', updatedData, {})
-          const { token, user } = response.data.data;
+          const response = await axios.post(
+            'http://localhost:3001/api/auth/register',
+            updatedData,
+            {}
+          )
+          const { token, user } = response.data.data
 
-          Cookies.set('token', token);
-          setUser(user);
+          Cookies.set('token', token)
+          setUser(user)
 
           if (response.data.code === 201) {
-            const sendVerification = await axios.post('http://localhost:3001/api/auth/send-email-verification', user, {
-              headers: {
-                'Authorization': `Bearer ${token}`
+            const sendVerification = await axios.post(
+              'http://localhost:3001/api/auth/send-email-verification',
+              user,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
               }
-            });
+            )
             if (sendVerification.data.code === 200) {
-              router.push('/verification');
+              router.push('/verification')
             }
           }
         } catch (error: any) {
-          if (error.response && error.response.data && error.response.data.code === 400) {
-            setErrorMessage('Email Already Used');
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.code === 400
+          ) {
+            setErrorMessage('Email Already Used')
           } else {
-            console.error('Error submitting form', error);
+            console.error('Error submitting form', error)
           }
         } finally {
-          setLoading(false);
-          console.log('Loading set to false');
+          setLoading(false)
+          console.log('Loading set to false')
         }
-      };
+      }
 
-      reader.readAsDataURL(data.profileImage);
+      reader.readAsDataURL(data.profileImage)
     } catch (error: any) {
-      console.error('Error processing form', error);
-      setLoading(false);
-      console.log('Loading set to false');
+      console.error('Error processing form', error)
+      setLoading(false)
+      console.log('Loading set to false')
     }
-  };
+  }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      form.setValue('profileImage', file);
+      const file = event.target.files[0]
+      form.setValue('profileImage', file)
 
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onloadend = () => {
-        setProfileShow(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+        setProfileShow(reader.result as string)
+      }
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
   const togglePasswordVisibility = () => {
-    setShowPassword((prevState) => !prevState);
-  };
+    setShowPassword((prevState) => !prevState)
+  }
 
   return (
-    <div className='flex flex-col relative w-full'>
-      <div className='relative flex flex-col flex-grow items-center justify-center bg-white px-40 py-20 font-bold'>
-        <div className='w-full flex flex-row justify-center relative py-12'>
-          <div className='absolute left-0'>
-            <button className='hover:scale-110 transition ease-in-out' onClick={onBack}>
-              <img src="/images/authentication/arrow-left.svg" alt="Arrow Left" />
+    <div className="flex flex-col relative w-full">
+      <div className="relative flex flex-col flex-grow items-center justify-center bg-white px-40 py-20 font-bold">
+        <div className="w-full flex flex-row justify-center relative py-12">
+          <div className="absolute left-0">
+            <button
+              className="hover:scale-110 transition ease-in-out"
+              onClick={onBack}
+            >
+              <img
+                src="/images/authentication/arrow-left.svg"
+                alt="Arrow Left"
+              />
             </button>
           </div>
-          <div className='flex justify-center items-center pt-4'>
-            <p className='text-3xl text-[#02353C]'>Sign Up as an Individual</p>
+          <div className="flex justify-center items-center pt-4">
+            <p className="text-3xl text-[#02353C]">Sign Up as an Individual</p>
           </div>
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='w-full gap-6 flex flex-col font-normal'>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full gap-6 flex flex-col font-normal"
+          >
             <FormField
               control={form.control}
               name="profileImage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className='text-[#333] flex justify-center'>Profile Image</FormLabel>
+                  <FormLabel className="text-[#333] flex justify-center">
+                    Profile Image
+                  </FormLabel>
                   <FormControl>
                     <div className="relative w-full flex justify-center">
                       <label
                         htmlFor="file-upload"
                         className="relative p-3 flex items-center justify-center w-40 h-40 bg-[#F8F8F8] text-[#188290] rounded-full cursor-pointer"
                       >
-                        <div className='bg-[#1882901C] w-full h-full rounded-full items-center flex justify-center'>
+                        <div className="bg-[#1882901C] w-full h-full rounded-full items-center flex justify-center">
                           {profileShow ? (
                             <img
                               src={profileShow}
@@ -180,7 +195,11 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
                               className="absolute inset-0 w-full h-full object-cover rounded-full"
                             />
                           ) : (
-                            <img src="/images/authentication/user-icon.svg" alt="Upload Icon" className="w-12 h-12" />
+                            <img
+                              src="/images/authentication/user-icon.svg"
+                              alt="Upload Icon"
+                              className="w-12 h-12"
+                            />
                           )}
                           <input
                             id="file-upload"
@@ -190,8 +209,12 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
                             className="hidden"
                           />
                         </div>
-                        <div className='absolute flex justify-center items-center w-12 h-12 rounded-[1.125rem] bg-[#F8F8F8] bottom-0 right-0'>
-                          <img src="/images/authentication/cam-icon.svg" alt="Upload Icon" className="w-8 h-8" />
+                        <div className="absolute flex justify-center items-center w-12 h-12 rounded-[1.125rem] bg-[#F8F8F8] bottom-0 right-0">
+                          <img
+                            src="/images/authentication/cam-icon.svg"
+                            alt="Upload Icon"
+                            className="w-8 h-8"
+                          />
                         </div>
                       </label>
                     </div>
@@ -205,9 +228,9 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className='text-[#333]'>Email</FormLabel>
+                  <FormLabel className="text-[#333]">Email</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder='Enter your email' />
+                    <Input {...field} placeholder="Enter your email" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -218,14 +241,14 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className='text-[#333]'>Password</FormLabel>
+                  <FormLabel className="text-[#333]">Password</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
-                        type={showPassword ? "text" : "password"}
+                        type={showPassword ? 'text' : 'password'}
                         {...field}
-                        className='pl-10'
-                        placeholder='Enter your password'
+                        className="pl-10"
+                        placeholder="Enter your password"
                       />
                       <button
                         type="button"
@@ -233,9 +256,13 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
                         className="absolute inset-y-0 left-0 pl-3 flex items-center text-sm leading-5"
                       >
                         <img
-                          src={showPassword ? "/images/authentication/eye-fill.svg" : "/images/authentication/eye-slash-fill.svg"}
-                          alt={showPassword ? "Hide password" : "Show password"}
-                          className='w-3/4'
+                          src={
+                            showPassword
+                              ? '/images/authentication/eye-fill.svg'
+                              : '/images/authentication/eye-slash-fill.svg'
+                          }
+                          alt={showPassword ? 'Hide password' : 'Show password'}
+                          className="w-3/4"
                         />
                       </button>
                     </div>
@@ -249,9 +276,9 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className='text-[#333]'>Full Name</FormLabel>
+                  <FormLabel className="text-[#333]">Full Name</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder='Enter your full name' />
+                    <Input {...field} placeholder="Enter your full name" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -262,9 +289,9 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className='text-[#333]'>Phone Number</FormLabel>
+                  <FormLabel className="text-[#333]">Phone Number</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder='Enter your phone number' />
+                    <Input {...field} placeholder="Enter your phone number" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -282,10 +309,12 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
             </button>
           </form>
         </Form>
-        <div className='w-full flex justify-center pt-6'>
-          <p className='text-black font-semibold'>
+        <div className="w-full flex justify-center pt-6">
+          <p className="text-black font-semibold">
             Already have an account?&nbsp;
-            <a className='text-[#188290] hover:text-[#02353C]' href='/login'>Sign in</a>
+            <a className="text-[#188290] hover:text-[#02353C]" href="/login">
+              Sign in
+            </a>
           </p>
         </div>
       </div>
@@ -293,4 +322,4 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
   )
 }
 
-export default RegisterIndividual;
+export default RegisterIndividual

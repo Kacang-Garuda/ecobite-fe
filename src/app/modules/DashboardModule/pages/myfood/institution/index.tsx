@@ -1,9 +1,7 @@
 import React from 'react'
 
 const MyFoodInstitution = () => {
-  return (
-    <div>index</div>
-  )
+  return <div>index</div>
 }
 
-export default MyFoodInstitution;
+export default MyFoodInstitution

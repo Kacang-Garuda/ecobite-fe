@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import Cookies from "js-cookie";
-import axios from "axios";
+import React, { useState } from 'react'
+import Cookies from 'js-cookie'
+import axios from 'axios'
 
 interface CardProps {
-  id: string;
-  img: string;
-  nama: string;
-  description: string;
-  statusPickUp: boolean;
+  id: string
+  img: string
+  nama: string
+  description: string
+  statusPickUp: boolean
 }
 
 const FoodCard: React.FC<CardProps> = ({
@@ -17,19 +17,19 @@ const FoodCard: React.FC<CardProps> = ({
   description,
   statusPickUp,
 }) => {
-  const [isPickedUp, setIsPickedUp] = useState(statusPickUp);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isPickedUp, setIsPickedUp] = useState(statusPickUp)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
 
   const toggleDropdown = () => {
     if (!isPickedUp) {
-      setDropdownOpen(!dropdownOpen);
+      setDropdownOpen(!dropdownOpen)
     }
-  };
+  }
 
   const handleStatusChange = async () => {
-    setIsPickedUp(!isPickedUp);
-    setDropdownOpen(false);
-    const token = Cookies.get("token");
+    setIsPickedUp(!isPickedUp)
+    setDropdownOpen(false)
+    const token = Cookies.get('token')
     if (token) {
       try {
         const response = await axios.patch(
@@ -38,12 +38,12 @@ const FoodCard: React.FC<CardProps> = ({
           {
             headers: { Authorization: `Bearer ${token}` },
           }
-        );
+        )
       } catch (error) {
-        console.error("Failed to fetch data", error);
+        console.error('Failed to fetch data', error)
       }
     }
-  };
+  }
 
   return (
     <div className="px-5 py-4 card-element w-max h-max flex flex-col items-center gap-4">
@@ -51,16 +51,16 @@ const FoodCard: React.FC<CardProps> = ({
         <div className="absolute right-0 mt-2 mr-2">
           <button
             className={`flex px-2 py-2 justify-center items-center gap-2.5 text-xs rounded-lg font-semibold ${
-              isPickedUp ? "bg-[#449342] text-white" : "bg-[#EEDD42] text-white"
+              isPickedUp ? 'bg-[#449342] text-white' : 'bg-[#EEDD42] text-white'
             }`}
             onClick={toggleDropdown}
             disabled={isPickedUp}
           >
-            {isPickedUp ? "Picked up" : "Wait for pick up"}
+            {isPickedUp ? 'Picked up' : 'Wait for pick up'}
             {!isPickedUp && (
               <svg
                 className={`w-4 h-4 transform ${
-                  dropdownOpen ? "rotate-180" : ""
+                  dropdownOpen ? 'rotate-180' : ''
                 }`}
                 fill="none"
                 stroke="currentColor"
@@ -88,7 +88,7 @@ const FoodCard: React.FC<CardProps> = ({
                   className="block px-4 py-2 text-xs font-semibold text-left text-[#333333] hover:bg-gray-100 hover:text-gray-900 w-full"
                   onClick={handleStatusChange}
                 >
-                  {isPickedUp ? "Wait for pick up" : "Picked up"}
+                  {isPickedUp ? 'Wait for pick up' : 'Picked up'}
                 </button>
               </div>
             </div>
@@ -106,7 +106,7 @@ const FoodCard: React.FC<CardProps> = ({
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default FoodCard;
+export default FoodCard
