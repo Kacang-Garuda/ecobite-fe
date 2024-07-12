@@ -57,7 +57,7 @@ const Navbar: React.FC = () => {
           </div>
           <div className="inline-flex gap-[2.25rem] items-center text-lg">
             <NavLink href="/">Home</NavLink>
-            <NavLink href="/foodshare">Food Sharing</NavLink>
+            <NavLink href="/donate">Food Sharing</NavLink>
             <NavLink href="/volunteering">Volunteering</NavLink>
           </div>
         </div>
