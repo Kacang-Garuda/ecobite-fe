@@ -11,6 +11,9 @@ import IndividualSidebar from '@/components/elements/DashboardElements/Individua
 import InstitutionSidebar from '@/components/elements/DashboardElements/InstitutionSidebar'
 import VolunteerLandingPage from './volunteer/index'
 import CreateEvent from './event/createevent'
+import ManageEvent from './event/manageevent/index'
+import ManageVolunteerCard from '@/components/elements/DashboardElements/ManageVolunteerCard'
+import EditEvent from './event/editevent/index';
 
 const DashboardLandingPage = () => {
   const { user, isLoading } = useAuth()
@@ -60,6 +63,10 @@ const DashboardLandingPage = () => {
     setActivePage('volunteer')
   }
 
+  const handleEditEventClick = (): void => {
+    setActivePage('editEvent')
+  }
+
   const renderContent = () => {
     if (isLoading || !user) {
       return (
@@ -70,36 +77,44 @@ const DashboardLandingPage = () => {
             className="animate-spin"
           />
         </div>
-      )
+      );
     }
-
-    switch (activePage) {
-      case 'editProfile':
-        return user.isInstitution ? (
-          <EditProfileInstitutionPage />
-        ) : (
-          <EditProfileIndividualPage />
-        )
-      case 'myDonation':
-        return user.isInstitution ? (
-          <MyDonationInstitution />
-        ) : (
-          <MyDonationIndividual />
-        )
-      case 'foodBooked':
-        return user.isInstitution ? <MyFoodInstitution /> : <MyFoodIndividual />
-      case 'volunteer':
-        return <VolunteerLandingPage />
-      case 'createEvent':
-        return <CreateEvent />
-      case 'manageEvent':
-        return <div>manage event</div>
-      case 'moneyReceived':
-        return <div>moneyReceived</div>
-      default:
-        return <></>
+  
+    if (activePage) {
+      const [page, id] = activePage.split(':');
+      
+      switch (page) {
+        case 'editProfile':
+          return user.isInstitution ? (
+            <EditProfileInstitutionPage />
+          ) : (
+            <EditProfileIndividualPage />
+          );
+        case 'myDonation':
+          return user.isInstitution ? (
+            <MyDonationInstitution />
+          ) : (
+            <MyDonationIndividual />
+          );
+        case 'foodBooked':
+          return user.isInstitution ? <MyFoodInstitution /> : <MyFoodIndividual />;
+        case 'volunteer':
+          return <VolunteerLandingPage />;
+        case 'createEvent':
+          return <CreateEvent />;
+        case 'manageEvent':
+          return <ManageEvent setActivePage={setActivePage} />;
+        case 'moneyReceived':
+          return <div>moneyReceived</div>;
+        case 'editEvent':
+          return <EditEvent id={id} />;
+        default:
+          return <></>;
+      }
     }
-  }
+  
+    return <></>;
+  };
 
   return (
     <div className="flex flex-row px-20 justify-center gap-12 py-20">

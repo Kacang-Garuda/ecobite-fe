@@ -47,7 +47,7 @@ const DonationDetails: React.FC<DonationDetailsProps> = ({title, donatedAt, imag
                     <p className='font-semibold'>
                         Recipient: {recipient}
                     </p>
-                    <ReactMarkdown >
+                    <ReactMarkdown className='markdown'>
                       {description}
                     </ReactMarkdown>
                 </div>

@@ -1,9 +1,8 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import FoodCard from '../../../../../components/elements/DashboardElements/FoodCard';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import { FoodDonation, Transaction } from '@/modules/AuthenticationModule/interface';
+import { FoodDonation } from '@/modules/AuthenticationModule/interface';
 import NullFood from '@/components/elements/DashboardElements/NullFood';
 import { format } from 'date-fns';
 import MyDonationCard from '@/components/elements/DashboardElements/MyDonationCard';
