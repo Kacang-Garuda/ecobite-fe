@@ -59,10 +59,11 @@ export interface MoneyDonation {
   updatedAt: Date
   donorEmail: string
   recipientEmail: string
+  donor: User
   progress: MoneyDonationProgress[]
 }
 
-type MoneyDonationProgressType =
+export type MoneyDonationProgressType =
   | 'PENDING'
   | 'CONFIRMED'
   | 'PURCHASED'

@@ -54,7 +54,7 @@ const EditProfileInstitutionPage = () => {
   const { user, setUser } = useAuth()
   const [fileName, setFileName] = useState('')
   const [base64String, setBase64String] = useState<string | null>(null)
-  const route = useRouter()
+  const router = useRouter()
   const form = useForm<z.infer<typeof institutionSchema>>({
     resolver: zodResolver(institutionSchema),
     defaultValues: {
@@ -70,20 +70,38 @@ const EditProfileInstitutionPage = () => {
     if (user?.profileImage) {
       setProfileShow(user.profileImage)
     }
+
+    const convertBase64ToFile = (base64: string, fileName: string) => {
+      const arr = base64.split(',')
+      const mimeMatch = arr[0].match(/:(.*?);/)
+      const mime = mimeMatch ? mimeMatch[1] : 'application/octet-stream'
+      const bstr = atob(arr[1])
+      let n = bstr.length
+      const u8arr = new Uint8Array(n)
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+      }
+      return new File([u8arr], fileName, { type: mime })
+    }
+
+    const profileImageFile = user?.profileImage
+      ? convertBase64ToFile(user.profileImage, 'profileImage.jpg')
+      : null
+
+    const qrisFile = user?.qris ? convertBase64ToFile(user.qris, 'qris.jpg') : null
+
     form.reset({
-      profileImage: user?.profileImage,
+      profileImage: profileImageFile,
       name: user?.name,
       phone: user?.phone,
       description: user?.description,
-      qris: user?.qris,
+      qris: qrisFile,
     })
-  }, [user, form])
 
-  useEffect(() => {
     if (user?.qris && user.qris.startsWith('data:image')) {
       setBase64String(user.qris)
     }
-  }, [user?.qris])
+  }, [user, form])
 
   const [loading, setLoading] = useState(false)
 
@@ -102,54 +120,36 @@ const EditProfileInstitutionPage = () => {
       try {
         setLoading(true)
         const updatedData = { ...data }
-        if (fileName) {
-          const file = data.qris
-          const reader = new FileReader()
-
-          reader.onloadend = async () => {
-            const profileImageBase64 = await convertFileToBase64(
-              data.profileImage
-            )
-            const qrisBase64 = await convertFileToBase64(data.qris)
-
-            const updatedData = {
-              ...data,
-              profileImage: profileImageBase64,
-              qris: qrisBase64,
-            }
-            const response = await axios.patch(
-              'http://localhost:3001/api/auth/',
-              updatedData,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            )
-            setUser(response.data.data)
-          }
-          reader.readAsDataURL(file)
+        if (data.profileImage instanceof File) {
+          updatedData.profileImage = await convertFileToBase64(data.profileImage)
+        }
+        if (data.qris instanceof File) {
+          updatedData.qris = await convertFileToBase64(data.qris)
         } else {
           delete updatedData.qris
-          const response = await axios.patch(
-            'http://localhost:3001/api/auth/',
-            updatedData,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
-          setUser(response.data.data)
         }
+
+        console.log('Sending updated data:', updatedData)
+
+        const response = await axios.patch(
+          'http://localhost:3001/api/auth/',
+          updatedData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        console.log('Response from server:', response.data)
+        setUser(response.data.data)
       } catch (error) {
         console.error('Error submitting form', error)
       } finally {
         setLoading(false)
-        route.push('/')
+        router.push('/')
       }
     } else {
-      console.log('error')
+      console.log('No token found')
     }
   }
 
@@ -185,7 +185,7 @@ const EditProfileInstitutionPage = () => {
           type: 'manual',
           message:
             file.size > MAX_FILE_SIZE
-              ? 'Max image size is 5MB.'
+              ? 'Max image size is 50MB.'
               : 'Only .jpg and .png formats are supported.',
         })
       }
@@ -199,7 +199,7 @@ const EditProfileInstitutionPage = () => {
           <div className="absolute left-0">
             <button
               className="hover:scale-110 transition ease-in-out"
-              onClick={() => route.back()}
+              onClick={() => router.back()}
             >
               <img
                 src="/images/authentication/arrow-left.svg"
@@ -227,7 +227,7 @@ const EditProfileInstitutionPage = () => {
                   <FormControl>
                     <div className="relative w-full flex justify-center">
                       <label
-                        htmlFor="file-upload"
+                        htmlFor="file-upload-profile"
                         className="relative p-3 flex items-center justify-center w-40 h-40 bg-[#F8F8F8] text-[#188290] rounded-full cursor-pointer"
                       >
                         <div className="bg-[#1882901C] w-full h-full rounded-full items-center flex justify-center">
@@ -245,7 +245,7 @@ const EditProfileInstitutionPage = () => {
                             />
                           )}
                           <input
-                            id="file-upload"
+                            id="file-upload-profile"
                             type="file"
                             accept="image/*"
                             onChange={handleProfileChange}
@@ -271,11 +271,14 @@ const EditProfileInstitutionPage = () => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#333]">
-                    Organization Name
-                  </FormLabel>
+                  <FormLabel className="text-[#333]">Institution Name</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      placeholder="Name"
+                      {...field}
+                      value={field.value ?? ''}
+                      className="bg-[#F8F8F8]"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -288,7 +291,12 @@ const EditProfileInstitutionPage = () => {
                 <FormItem>
                   <FormLabel className="text-[#333]">Phone Number</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      placeholder="Phone"
+                      {...field}
+                      value={field.value ?? ''}
+                      className="bg-[#F8F8F8]"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -299,78 +307,78 @@ const EditProfileInstitutionPage = () => {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#333]">
-                    Organization Description
-                  </FormLabel>
+                  <FormLabel className="text-[#333]">Description</FormLabel>
                   <FormControl>
-                    <Textarea rows={6} {...field} className="w-full" />
+                    <Textarea
+                      placeholder="Description"
+                      {...field}
+                      value={field.value ?? ''}
+                      className="bg-[#F8F8F8]"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="flex w-full gap-20 items-center">
-              <FormField
-                control={form.control}
-                name="qris"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel className="text-[#333]">
-                      QRIS Bank Account
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative w-full">
-                        <label
-                          htmlFor="file-upload"
-                          className="flex items-center justify-center w-full py-4 border-dashed border-2 border-[#188290] text-[#188290] rounded-md cursor-pointer"
-                        >
-                          <img
-                            src="/images/authentication/upload-icon.svg"
-                            alt="Upload Icon"
-                            className="mr-2"
-                          />
-                          <span
-                            className={
-                              fileName ? 'text-black' : 'text-[#828282]'
-                            }
-                          >
-                            {fileName || 'Browse File'}
-                          </span>
-                          <Input
-                            id="file-upload"
+            <FormField
+              control={form.control}
+              name="qris"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[#333] flex justify-center">QRIS</FormLabel>
+                  <FormControl>
+                    <div className="relative w-full flex justify-center">
+                      <label
+                        htmlFor="file-upload-qris"
+                        className="relative p-3 flex items-center justify-center w-52 h-60 bg-[#F8F8F8] text-[#188290] rounded-lg cursor-pointer"
+                      >
+                        <div className="bg-[#1882901C] w-full h-full rounded-lg items-center flex justify-center">
+                          {base64String ? (
+                            <img
+                              src={base64String}
+                              alt="QRIS"
+                              className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                            />
+                          ) : (
+                            <img
+                              src="/images/institution/defaultQRIS.png"
+                              alt="Default QRIS"
+                              className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                            />
+                          )}
+                          <input
+                            id="file-upload-qris"
                             type="file"
-                            className="absolute inset-0 opacity-0 cursor-pointer"
-                            accept="image/png, image/jpg"
+                            accept="image/*"
                             onChange={handleFileChange}
+                            className="hidden"
                           />
-                        </label>
-                      </div>
-                    </FormControl>
-                    <FormDescription>
-                      File supported: .png, .jpg
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {base64String && (
-                <div className="flex-1 py-4 gap-8 flex flex-col">
-                  <p className="font-medium">Last Qris:</p>
-                  <img src={base64String} alt="QRIS" className="w-1/2 h-auto" />
-                </div>
+                        </div>
+                        <div className="absolute flex justify-center items-center w-12 h-12 rounded-[1.125rem] bg-[#F8F8F8] bottom-0 right-0">
+                          <img
+                            src="/images/authentication/cam-icon.svg"
+                            alt="Upload Icon"
+                            className="w-8 h-8"
+                          />
+                        </div>
+                      </label>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
+            />
+            <div className="relative flex justify-center mt-6">
+              <button
+                type="submit"
+                className={`w-[32rem] h-12 bg-[#188290] text-white rounded-md hover:scale-105 transition ease-in-out duration-300 ${
+                  loading ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+                disabled={loading}
+              >
+                Save
+              </button>
             </div>
-            <button
-              type="submit"
-              className={`mt-10 px-10 py-4 w-max flex self-center font-semibold text-white rounded-lg ${
-                loading
-                  ? 'bg-gray-500 cursor-not-allowed'
-                  : 'bg-[#188290] hover:bg-[#02353C]'
-              }`}
-              disabled={loading}
-            >
-              {loading ? 'Saving Your Update...' : 'Save'}
-            </button>
           </form>
         </Form>
       </div>

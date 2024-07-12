@@ -12,8 +12,8 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ foodProgress }) => {
   const router = useRouter()
   const processedUsers = new Set<string>()
 
-  const handleProfileClick = (userId: string) => {
-    router.push(`/profile/${userId}`)
+  const handleProfileClick = (email: string) => {
+    router.push(`/profile/${email}`)
   }
 
   return (
