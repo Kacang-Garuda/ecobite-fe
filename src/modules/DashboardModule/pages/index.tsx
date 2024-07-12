@@ -14,6 +14,7 @@ import CreateEvent from './event/createevent'
 import ManageEvent from './event/manageevent/index'
 import ManageVolunteerCard from '@/components/elements/DashboardElements/ManageVolunteerCard'
 import EditEvent from './event/editevent/index';
+import MoneyReceived from './moneyreceived/index';
 
 const DashboardLandingPage = () => {
   const { user, isLoading } = useAuth()
@@ -105,7 +106,7 @@ const DashboardLandingPage = () => {
         case 'manageEvent':
           return <ManageEvent setActivePage={setActivePage} />;
         case 'moneyReceived':
-          return <div>moneyReceived</div>;
+          return <MoneyReceived />;
         case 'editEvent':
           return <EditEvent id={id} />;
         default:

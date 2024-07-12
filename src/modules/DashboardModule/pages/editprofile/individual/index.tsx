@@ -52,19 +52,45 @@ const EditProfileIndividualPage = () => {
 
   useEffect(() => {
     if (user?.profileImage) {
-      setProfileShow(user.profileImage)
+      const convertBase64ToFile = (base64: string, fileName: string) => {
+        const arr = base64.split(',')
+        if (arr.length < 2) {
+          throw new Error('Invalid base64 string')
+        }
+        const mimeMatch = arr[0].match(/:(.*?);/)
+        const mime = mimeMatch ? mimeMatch[1] : 'application/octet-stream'
+        const bstr = atob(arr[1])
+        let n = bstr.length
+        const u8arr = new Uint8Array(n)
+        while (n--) {
+          u8arr[n] = bstr.charCodeAt(n)
+        }
+        return new File([u8arr], fileName, { type: mime })
+      }
+
+      try {
+        const imageFile = convertBase64ToFile(user.profileImage, 'profileImage.jpg')
+        setProfileShow(user.profileImage)
+        form.reset({
+          profileImage: imageFile,
+          name: user?.name,
+          phone: user?.phone,
+        })
+      } catch (error) {
+        console.error('Error converting base64 to file:', error)
+      }
+    } else {
+      form.reset({
+        profileImage: null,
+        name: user?.name,
+        phone: user?.phone,
+      })
     }
-    form.reset({
-      profileImage: user?.profileImage,
-      name: user?.name,
-      phone: user?.phone,
-    })
   }, [user, form])
 
   const [loading, setLoading] = useState(false)
 
   const onSubmit = async (data: z.infer<typeof individualSchema>) => {
-    console.log(data)
     const token = Cookies.get('token')
     if (token) {
       try {
