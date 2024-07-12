@@ -1,12 +1,22 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../AuthenticationModule/context/Authentication';
 import EditProfileIndividualPage from './editprofile/individual';
 import EditProfileInstitutionPage from './editprofile/institution';
+import MyFoodInstitution from './myfood/institution';
+import MyFoodIndividual from './myfood/individual';
 
 const DashboardLandingPage = () => {
-  const { user } = useAuth()
-  const [activePage, setActivePage] = useState('editProfile');
+  const { user, isLoading } = useAuth();
+  const [activePage, setActivePage] = useState<string | null>('editProfile');
+  
+  useEffect(() => {
+    if (!isLoading && !user) {
+      setActivePage(null);  // Set to null or any other default state when the user is not logged in
+    } else {
+      setActivePage('editProfile')
+    }
+  }, [isLoading, user]);
 
   const handleEditProfileClick = () => {
     setActivePage('editProfile');
@@ -25,17 +35,21 @@ const DashboardLandingPage = () => {
   };
 
   const renderContent = () => {
+    if (isLoading || !user) {
+      return <div className='flex w-full h-full justify-center items-center'><img src="/images/circular-determinate.svg" alt="Circular Loading" className='animate-spin'/></div>;
+    }
+
     switch (activePage) {
       case 'editProfile':
-        return user?.isInstitution ? <EditProfileInstitutionPage /> : <EditProfileIndividualPage />;
+        return user.isInstitution ? <EditProfileInstitutionPage /> : <EditProfileIndividualPage />;
       case 'myDonation':
         return <div>My Donation Page</div>;
       case 'foodBooked':
-        return <div>Food Booked Page</div>;
+        return user.isInstitution ? <MyFoodInstitution /> : <MyFoodIndividual />
       case 'volunteer':
-        return <div>Volunteer Page</div>;
+        return <div>Food Booked Page</div>;
       default:
-        return user?.isInstitution ? <EditProfileInstitutionPage /> : <EditProfileIndividualPage />;
+        return <></>;
     }
   };
 

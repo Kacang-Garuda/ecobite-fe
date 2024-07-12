@@ -19,10 +19,18 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useAuth } from '@/app/modules/AuthenticationModule/context/Authentication';
 
-const MAX_FILE_SIZE = 50000;
+const MAX_FILE_SIZE = 50000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpg", "image/png"];
 
 const institutionSchema = z.object({
+  profileImage: z
+  .any()
+  .refine((file) => file !== null, { message: "Please select a file" })
+  .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 50MB.`)
+  .refine(
+    (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+    "Only .jpg and .png formats are supported."
+  ),
   name: z
     .string()
     .min(1, { message: "Please enter a valid input" }),
@@ -36,10 +44,11 @@ const institutionSchema = z.object({
   qris: z
     .any()
     .optional()
-    .refine((file) => !file || (file.size <= MAX_FILE_SIZE && ACCEPTED_IMAGE_TYPES.includes(file.type)), "Only .jpg and .png formats are supported and max size is 50KB."),
+    .refine((file) => !file || (file.size <= MAX_FILE_SIZE && ACCEPTED_IMAGE_TYPES.includes(file.type)), "Only .jpg and .png formats are supported and max size is 50MB."),
 });
 
 const EditProfileInstitutionPage = () => {
+  const [profileShow, setProfileShow] = useState<string | null>(null);
   const { user, setUser } = useAuth();
   const [fileName, setFileName] = useState('');
   const [base64String, setBase64String] = useState<string | null>(null);
@@ -47,6 +56,7 @@ const EditProfileInstitutionPage = () => {
   const form = useForm<z.infer<typeof institutionSchema>>({
     resolver: zodResolver(institutionSchema),
     defaultValues: {
+      profileImage: null,
       name: user?.name,
       phone: user?.phone,
       description: user?.description,
@@ -55,12 +65,34 @@ const EditProfileInstitutionPage = () => {
   });
 
   useEffect(() => {
+    if (user?.profileImage) {
+      setProfileShow(user.profileImage);
+    }
+    form.reset({
+      profileImage: user?.profileImage,
+      name: user?.name,
+      phone: user?.phone,
+      description: user?.description,
+      qris: user?.qris,
+    });
+  }, [user, form]);
+
+  useEffect(() => {
     if (user?.qris && user.qris.startsWith('data:image')) {
       setBase64String(user.qris);
     }
   }, [user?.qris]);
   
   const [loading, setLoading] = useState(false);
+
+  const convertFileToBase64 = (file: File) => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  };
 
   const onSubmit = async (data: z.infer<typeof institutionSchema>) => {
     const token = Cookies.get('token');
@@ -73,8 +105,14 @@ const EditProfileInstitutionPage = () => {
           const reader = new FileReader();
     
           reader.onloadend = async () => {
-            const base64String = reader.result;
-            updatedData.qris = base64String;
+            const profileImageBase64 = await convertFileToBase64(data.profileImage);
+            const qrisBase64 = await convertFileToBase64(data.qris);
+
+            const updatedData = {
+              ...data,
+              profileImage: profileImageBase64,
+              qris: qrisBase64,
+            };
             const response = await axios.patch('http://localhost:3001/api/auth/', updatedData, {
               headers: {
                 'Authorization': `Bearer ${token}`
@@ -84,7 +122,7 @@ const EditProfileInstitutionPage = () => {
           };
           reader.readAsDataURL(file);
         } else {
-          delete updatedData.qris; // Prevent sending empty qris field
+          delete updatedData.qris;
           const response = await axios.patch('http://localhost:3001/api/auth/', updatedData, {
             headers: {
               'Authorization': `Bearer ${token}`
@@ -100,6 +138,19 @@ const EditProfileInstitutionPage = () => {
       }
     } else {
       console.log("error");
+    }
+  };
+
+  const handleProfileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      form.setValue('profileImage', file);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileShow(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -140,6 +191,46 @@ const EditProfileInstitutionPage = () => {
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='w-full gap-6 flex flex-col font-normal'>
+          <FormField
+              control={form.control}
+              name="profileImage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-[#333] flex justify-center'>Profile Image</FormLabel>
+                  <FormControl>
+                    <div className="relative w-full flex justify-center">
+                      <label
+                        htmlFor="file-upload"
+                        className="relative p-3 flex items-center justify-center w-40 h-40 bg-[#F8F8F8] text-[#188290] rounded-full cursor-pointer"
+                      >
+                        <div className='bg-[#1882901C] w-full h-full rounded-full items-center flex justify-center'>
+                          {profileShow ? (
+                            <img
+                              src={profileShow}
+                              alt="Profile"
+                              className="absolute inset-0 w-full h-full object-cover rounded-full"
+                            />
+                          ) : (
+                            <img src="/images/authentication/user-icon.svg" alt="Upload Icon" className="w-12 h-12" />
+                          )}
+                          <input
+                            id="file-upload"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleProfileChange}
+                            className="hidden"
+                          />
+                        </div>
+                        <div className='absolute flex justify-center items-center w-12 h-12 rounded-[1.125rem] bg-[#F8F8F8] bottom-0 right-0'>
+                          <img src="/images/authentication/cam-icon.svg" alt="Upload Icon" className="w-8 h-8" />
+                        </div>
+                      </label>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="name"
