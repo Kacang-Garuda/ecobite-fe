@@ -60,7 +60,8 @@ const ListVolunteer: React.FC<ListVolunteerProps> = ({id}) => {
                         </TableHeader>
                         <TableBody>
                             {event && event?.registeredUsers.map((value) => 
-                            <TableRowVolunteer 
+                            <TableRowVolunteer
+                                key={value.id}
                                 id={value.id}
                                 image={value.user.profileImage}
                                 name={value.user.name}
