@@ -1,52 +1,52 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import NavLink from "./NavLink";
-import { useAuth } from "@/modules/AuthenticationModule/context/Authentication";
+'use client'
+import React, { useState, useEffect } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import Cookies from 'js-cookie'
+import NavLink from './NavLink'
+import { useAuth } from '@/modules/AuthenticationModule/context/Authentication'
 
 const Navbar: React.FC = () => {
-  const pathname = usePathname();
-  const router = useRouter();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { isLoggedIn, user, setIsLoggedIn, setUser, isLoading } = useAuth();
+  const pathname = usePathname()
+  const router = useRouter()
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const { isLoggedIn, user, setIsLoggedIn, setUser, isLoading } = useAuth()
 
   const handleNavigation = (path: string) => {
     if (pathname !== path) {
-      router.push(path);
+      router.push(path)
     }
-  };
+  }
 
   const getSignUpClass = (path: string) =>
     pathname.startsWith(path)
-      ? "bg-[#828282] cursor-not-allowed"
-      : "bg-[#188290] hover:bg-[#02353C]";
+      ? 'bg-[#828282] cursor-not-allowed'
+      : 'bg-[#188290] hover:bg-[#02353C]'
 
   const getSignInClass = (path: string) =>
     pathname.startsWith(path)
-      ? "text-[#828282] cursor-not-allowed"
-      : "text-[#02353C] hover:bg-[#B1C0C3]";
+      ? 'text-[#828282] cursor-not-allowed'
+      : 'text-[#02353C] hover:bg-[#B1C0C3]'
 
   const handleMouseEnter = () => {
-    setIsDropdownOpen(true);
-  };
+    setIsDropdownOpen(true)
+  }
 
   const handleMouseLeave = () => {
-    setIsDropdownOpen(false);
-  };
+    setIsDropdownOpen(false)
+  }
 
   const getMenuItemClass = (path: string) =>
-    pathname !== path ? "text-[#828282]" : "text-[#02353C] font-semibold";
+    pathname !== path ? 'text-[#828282]' : 'text-[#02353C] font-semibold'
 
   const handleSignOut = () => {
-    Cookies.remove("token");
-    Cookies.remove("user");
-    Cookies.remove("rememberMe");
-    setIsLoggedIn(false);
-    setUser(null);
-    setIsDropdownOpen(false);
-    router.push("/login");
-  };
+    Cookies.remove('token')
+    Cookies.remove('user')
+    Cookies.remove('rememberMe')
+    setIsLoggedIn(false)
+    setUser(null)
+    setIsDropdownOpen(false)
+    router.push('/login')
+  }
 
   return (
     <nav className="fixed w-full z-50 flex p-2 flex-col items-start bg-white navbar-shadow">
@@ -75,8 +75,8 @@ const Navbar: React.FC = () => {
                 <img
                   src={
                     isDropdownOpen
-                      ? "/images/arrow-up.svg"
-                      : "/images/arrow-down.svg"
+                      ? '/images/arrow-up.svg'
+                      : '/images/arrow-down.svg'
                   }
                   alt="Arrow"
                 />
@@ -87,7 +87,7 @@ const Navbar: React.FC = () => {
                     <a
                       href="/dashboard"
                       className={`flex items-center p-2 hover:bg-gray-100 ${getMenuItemClass(
-                        "/profile/myfood"
+                        '/profile/myfood'
                       )}`}
                     >
                       <img
@@ -113,19 +113,19 @@ const Navbar: React.FC = () => {
           ) : (
             <>
               <button
-                disabled={pathname.startsWith("/register")}
-                onClick={() => handleNavigation("/register")}
+                disabled={pathname.startsWith('/register')}
+                onClick={() => handleNavigation('/register')}
                 className={`flex justify-center items-center rounded-lg py-4 px-10 text-white signup-shadow ${getSignUpClass(
-                  "/register"
+                  '/register'
                 )}`}
               >
                 Sign Up
               </button>
               <button
-                disabled={pathname.startsWith("/login")}
-                onClick={() => handleNavigation("/login")}
+                disabled={pathname.startsWith('/login')}
+                onClick={() => handleNavigation('/login')}
                 className={`flex justify-center items-center rounded-lg py-4 px-10 ${getSignInClass(
-                  "/login"
+                  '/login'
                 )}`}
               >
                 Sign In
@@ -135,7 +135,7 @@ const Navbar: React.FC = () => {
         </div>
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

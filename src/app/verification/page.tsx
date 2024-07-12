@@ -1,8 +1,8 @@
-import React from "react";
-import EmailVerification from "../../modules/AuthenticationModule/pages/email/verification/index";
+import React from 'react'
+import EmailVerification from '../../modules/AuthenticationModule/pages/email/verification/index'
 
 const page = () => {
-  return <EmailVerification />;
-};
+  return <EmailVerification />
+}
 
-export default page;
+export default page
