@@ -76,7 +76,7 @@ const HeroSection = () => {
         <div>
           <button>
             <a
-              href={isLoggedIn ? '/foodshare' : '/login'}
+              href={isLoggedIn ? '/donate' : '/login'}
               className={`flex shrink-0 justify-center items-center rounded-lg py-4 px-10 text-white 
             signup-shadow bg-[#188290] text-2xl hover:bg-[#02353C]`}
             >
