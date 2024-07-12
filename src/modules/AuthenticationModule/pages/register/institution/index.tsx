@@ -110,7 +110,7 @@ const RegisterInstitution: React.FC<RegisterInstitutionProps> = ({
 
       try {
         const response = await axios.post(
-          'http://localhost:3001/api/auth/register',
+          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
           updatedData,
           {}
         )
@@ -121,7 +121,7 @@ const RegisterInstitution: React.FC<RegisterInstitutionProps> = ({
 
         if (response.data.code === 201) {
           await axios.post(
-            'http://localhost:3001/api/auth/send-email-verification',
+            `${process.env.NEXT_PUBLIC_API_URL}/api/auth/send-email-verification`,
             user,
             {
               headers: {

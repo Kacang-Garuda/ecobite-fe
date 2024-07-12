@@ -23,7 +23,7 @@ const VolunteerLandingPage = () => {
       if (token) {
         try {
           const response = await axios.get(
-            'http://localhost:3001/api/event/volunteer/',
+            `${process.env.NEXT_PUBLIC_API_URL}/api/event/volunteer/`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

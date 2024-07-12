@@ -85,7 +85,7 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
 
         try {
           const response = await axios.post(
-            'http://localhost:3001/api/auth/register',
+            `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
             updatedData,
             {}
           )
@@ -96,7 +96,7 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
 
           if (response.data.code === 201) {
             const sendVerification = await axios.post(
-              'http://localhost:3001/api/auth/send-email-verification',
+              `${process.env.NEXT_PUBLIC_API_URL}/api/auth/send-email-verification`,
               user,
               {
                 headers: {

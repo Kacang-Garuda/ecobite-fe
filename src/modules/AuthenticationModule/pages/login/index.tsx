@@ -62,7 +62,7 @@ const LoginPage = () => {
       setLoading(true)
       setErrorMessage('')
       const response = await axios.post(
-        'http://localhost:3001/api/auth/login',
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
         data
       )
       const { token, user } = response.data.data

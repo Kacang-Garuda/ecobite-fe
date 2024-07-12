@@ -87,7 +87,7 @@ const CreateEvent = () => {
             image: coverPhotoBase64,
           }
     
-          const response = await axios.post('http://localhost:3001/api/event',updatedData,
+          const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/event`,updatedData,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
