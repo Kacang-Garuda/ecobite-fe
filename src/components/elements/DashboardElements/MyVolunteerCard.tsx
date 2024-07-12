@@ -41,13 +41,13 @@ const MyVolunteerCard: React.FC<VolunteerCardProps> = ({
           </div>
         </div>
         <div className="flex">
-          {status === 'Accepted' ? (
+          {status === 'ACCEPTED' ? (
             <label
               className={`flex px-6 py-2 justify-center items-center gap-2.5 text-xs rounded-lg font-semibold bg-[#449342] text-white`}
             >
               Accepted
             </label>
-          ) : status === 'Pending' ? (
+          ) : status === 'PENDING' ? (
             <label
               className={`flex px-6 py-2 justify-center items-center gap-2.5 text-xs rounded-lg font-semibold bg-[#E6C722] text-white`}
             >

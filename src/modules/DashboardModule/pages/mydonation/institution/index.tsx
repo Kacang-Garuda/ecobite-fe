@@ -56,7 +56,7 @@ const MyDonationIndividual = () => {
                 nama={value.title}
                 description={lastProgress ? format(lastProgress.createdAt, 'dd/MM/yyyy hh:mm aa') : 'No progress available'}
                 status={lastProgress ? lastProgress.status : 'No status available'}
-                recipient={lastProgress.by}
+                recipient={lastProgress.user.name}
               />
             );
           })}
