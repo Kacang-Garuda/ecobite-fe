@@ -1,6 +1,6 @@
 'use client'
 import { FoodDonationProgress } from '@/modules/AuthenticationModule/interface';
-import router from 'next/router'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import ProgressBar from '../../../../components/elements/DashboardElements/ProgressBar';
@@ -18,6 +18,7 @@ interface DonationDetailsProps {
 }
 
 const DonationDetails: React.FC<DonationDetailsProps> = ({title, donatedAt, image, recipient, description, quantity, expiredDate, instruction, progress}) => {
+  const router = useRouter();
   return (
     <div className="flex flex-col relative w-full">
       <div className="relative flex flex-col flex-grow items-center justify-center px-40 py-20 bg-white  font-bold">
