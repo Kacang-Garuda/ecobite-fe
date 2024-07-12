@@ -30,7 +30,7 @@ const MoneyReceived = () => {
             if (token) {
                 try {
                     const response = await axios.get(
-                        'http://localhost:3001/api/money-donation/',
+                        `${process.env.NEXT_PUBLIC_API_URL}/api/money-donation/`,
                         {
                             headers: {
                                 Authorization: `Bearer ${token}`,
@@ -81,7 +81,7 @@ const MoneyReceived = () => {
         console.log(checkedIds)
         try {
             await axios.patch(
-                'http://localhost:3001/api/money-donation/',
+                `${process.env.NEXT_PUBLIC_API_URL}/api/money-donation/`,
                 {
                     status: selectedStatus,
                     moneyDonationIds: checkedIds,

@@ -22,7 +22,7 @@ export default function DonationDetailsPage({
 
       if (token) {
         try {
-          const response = await axios.get(`http://localhost:3001/api/auth/${params.email}`, {
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/${params.email}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

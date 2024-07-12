@@ -23,7 +23,7 @@ const VolunteerDetail = ({ params }: { params: { id: string } }) => {
 
     if (token) {
       const response = await axios.get(
-        `http://localhost:3001/api/event/${params.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/event/${params.id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

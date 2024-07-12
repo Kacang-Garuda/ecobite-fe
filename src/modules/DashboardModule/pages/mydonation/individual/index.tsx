@@ -17,7 +17,7 @@ const MyDonationIndividual = () => {
       if (token) {
         try {
           const response = await axios.get(
-            'http://localhost:3001/api/food-donation/my-donation/',
+            `${process.env.NEXT_PUBLIC_API_URL}/api/food-donation/my-donation/`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

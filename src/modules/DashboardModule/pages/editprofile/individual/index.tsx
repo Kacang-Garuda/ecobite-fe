@@ -106,7 +106,7 @@ const EditProfileIndividualPage = () => {
 
           try {
             const response = await axios.patch(
-              'http://localhost:3001/api/auth/',
+              `${process.env.NEXT_PUBLIC_API_URL}/api/auth/`,
               updatedData,
               {
                 headers: {

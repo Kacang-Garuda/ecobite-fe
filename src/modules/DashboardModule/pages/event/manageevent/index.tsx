@@ -21,7 +21,7 @@ const ManageEvent: React.FC<ManageEventProps> = ({ setActivePage }) => {
       if (token) {
         try {
           const response = await axios.get(
-            'http://localhost:3001/api/event/',
+            `${process.env.NEXT_PUBLIC_API_URL}/api/event/`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

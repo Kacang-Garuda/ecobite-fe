@@ -18,7 +18,7 @@ const MoneyDonationHome = () => {
 
     if (token) {
       const response = await axios.get(
-        'http://localhost:3001/api/food-donation/institution',
+        `${process.env.NEXT_PUBLIC_API_URL}/api/food-donation/institution`,
         { headers: { Authorization: `Bearer ${token}` } }
       )
 
