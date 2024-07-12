@@ -34,9 +34,10 @@ const FoodCard: React.FC<CardProps> = ({
       try {
         const response = await axios.patch(
           `http://localhost:3001/api/food-donation/picked-up/${id}`,
-          {},
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         )
       } catch (error) {
@@ -50,18 +51,14 @@ const FoodCard: React.FC<CardProps> = ({
       <div className="w-[16.25rem] h-[6.25rem] flex-shrink-0 bg-[#D9D9D9] rounded-lg relative">
         <div className="absolute right-0 mt-2 mr-2">
           <button
-            className={`flex px-2 py-2 justify-center items-center gap-2.5 text-xs rounded-lg font-semibold ${
-              isPickedUp ? 'bg-[#449342] text-white' : 'bg-[#EEDD42] text-white'
-            }`}
+            className={`flex px-2 py-2 justify-center items-center gap-2.5 text-xs rounded-lg font-semibold ${isPickedUp ? 'bg-[#449342] text-white' : 'bg-[#EEDD42] text-white'}`}
             onClick={toggleDropdown}
             disabled={isPickedUp}
           >
             {isPickedUp ? 'Picked up' : 'Wait for pick up'}
             {!isPickedUp && (
               <svg
-                className={`w-4 h-4 transform ${
-                  dropdownOpen ? 'rotate-180' : ''
-                }`}
+                className={`w-4 h-4 transform ${dropdownOpen ? 'rotate-180' : ''}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"

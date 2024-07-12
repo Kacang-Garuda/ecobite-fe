@@ -45,7 +45,7 @@ const MyFoodIndividual = () => {
           {foodReceived.map((value, index) => (
             <FoodCard
               key={index}
-              id={value.foodDonationId}
+              id={value.id}
               img={value.foodDonation.imageUrl}
               nama={value.foodDonation.title}
               description={format(value.createdAt, 'dd/MM/yyyy hh:mm aa')}
