@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../AuthenticationModule/context/Authentication';
 import EditProfileIndividualPage from './editprofile/individual';
 import EditProfileInstitutionPage from './editprofile/institution';
+import MyFoodInstitution from './myfood/institution';
+import MyFoodIndividual from './myfood/individual';
 
 const DashboardLandingPage = () => {
   const { user, isLoading } = useAuth();
@@ -43,9 +45,9 @@ const DashboardLandingPage = () => {
       case 'myDonation':
         return <div>My Donation Page</div>;
       case 'foodBooked':
-        return <div>Food Booked Page</div>;
+        return user.isInstitution ? <MyFoodInstitution /> : <MyFoodIndividual />
       case 'volunteer':
-        return <div>Volunteer Page</div>;
+        return <div>Food Booked Page</div>;
       default:
         return <></>;
     }

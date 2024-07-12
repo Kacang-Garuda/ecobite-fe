@@ -33,11 +33,13 @@ export interface Transaction {
     id: string;
     quantity: number;
     notes: string;
+    isPickedUp: boolean;
     createdAt: Date;
     updatedAt: Date;
     donorEmail: string;
     recipientEmail: string;
     foodDonationId: string;
+    foodDonation: FoodDonation;
 }
 
 export interface MoneyDonation {
