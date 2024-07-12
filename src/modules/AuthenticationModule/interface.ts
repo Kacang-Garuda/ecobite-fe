@@ -29,9 +29,11 @@ export interface  FoodDonation {
 export interface FoodDonationProgress {
   id: string
   status: FoodDonationProgressType
-  by: string
   createdAt: Date
   updatedAt: Date
+  quantity: number;
+  userEmail: string;
+  user: User
   foodDonationId: string
 }
 
@@ -134,4 +136,5 @@ export interface User {
   receiveMoney: MoneyDonation[]
   events: Event[]
   registeredEvents: RegisteredEvent[]
+  foodDonationProgress: FoodDonationProgress[]
 }
