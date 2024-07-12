@@ -45,6 +45,7 @@ const MyFoodIndividual = () => {
             <FoodCard
               key={index}
               id={value.id}
+              foodDonationId={value.foodDonationId}
               img={value.foodDonation.imageUrl}
               nama={value.foodDonation.title}
               description={format(value.createdAt, 'dd/MM/yyyy hh:mm aa')}

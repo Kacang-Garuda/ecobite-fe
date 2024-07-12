@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import Cookies from 'js-cookie'
 import axios from 'axios'
+import Link from 'next/link'
 
 interface CardProps {
   id: string
+  foodDonationId: string
   img: string
   nama: string
   description: string
@@ -12,6 +14,7 @@ interface CardProps {
 
 const FoodCard: React.FC<CardProps> = ({
   id,
+  foodDonationId,
   img,
   nama,
   description,
@@ -98,9 +101,12 @@ const FoodCard: React.FC<CardProps> = ({
         <p className="text-xs font-normal">Booked on {description}</p>
       </div>
       <div>
-        <button className="px-8 py-3 font-semibold text-sm bg-[#188290] rounded-lg hover:bg-[#02353C] text-white">
+        <Link
+          href={`/donate/${foodDonationId}`}
+          className="px-8 py-3 font-semibold text-sm bg-[#188290] rounded-lg hover:bg-[#02353C] text-white"
+        >
           View Details
-        </button>
+        </Link>
       </div>
     </div>
   )
