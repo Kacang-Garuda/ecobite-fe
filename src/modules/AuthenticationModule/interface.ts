@@ -87,7 +87,7 @@ export interface Event {
   image: string
   createdAt: Date
   updatedAt: Date
-  registeredUser: RegisteredEvent[]
+  registeredUsers: RegisteredEvent[]
   userEmail: string
 }
 
