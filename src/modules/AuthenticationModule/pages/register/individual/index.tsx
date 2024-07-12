@@ -73,7 +73,6 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
     try {
       setLoading(true)
       setErrorMessage('')
-      console.log('Loading set to true')
 
       const reader = new FileReader()
       reader.onloadend = async () => {
@@ -120,7 +119,6 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
           }
         } finally {
           setLoading(false)
-          console.log('Loading set to false')
         }
       }
 
@@ -128,7 +126,6 @@ const RegisterIndividual: React.FC<RegisterIndividualProps> = ({ onBack }) => {
     } catch (error: any) {
       console.error('Error processing form', error)
       setLoading(false)
-      console.log('Loading set to false')
     }
   }
 

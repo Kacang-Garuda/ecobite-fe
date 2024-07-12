@@ -28,7 +28,6 @@ const ManageEvent: React.FC<ManageEventProps> = ({ setActivePage }) => {
               },
             }
           )
-          console.log(response.data)
           setEvent(response.data.data)
         } catch (error) {
           console.error('Failed to fetch user data', error)
@@ -44,6 +43,10 @@ const ManageEvent: React.FC<ManageEventProps> = ({ setActivePage }) => {
 
   const handleEdit = (id: string) => {
     setActivePage(`editEvent:${id}`)
+  }
+
+  const handleVolunteer = (id: string) => {
+    setActivePage(`listVolunteer:${id}`)
   }
 
   return (
@@ -70,6 +73,7 @@ const ManageEvent: React.FC<ManageEventProps> = ({ setActivePage }) => {
               registeredUser={value.registeredUsers.length}
               onEdit={() => handleEdit(value.id)}
               handleTrigger={handleTrigger}
+              handleVolunteer={() => handleVolunteer(value.id)}
             />
           ))}
         </div>

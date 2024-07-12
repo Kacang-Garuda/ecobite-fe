@@ -41,7 +41,6 @@ const EmailVerification = () => {
             },
           }
         )
-        console.log(sendVerification.data)
       }
     } catch (error) {
       console.error(error)

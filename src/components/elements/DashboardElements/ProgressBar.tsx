@@ -23,7 +23,6 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ foodProgress }) => {
           const isLast = index === foodProgress.length - 1
           const ellipseSrc = isLast ? '/images/dashboard/green-ellipse.svg' : '/images/dashboard/grey-ellipse.svg'
           const textColor = isLast ? 'text-[#188290]' : 'text-[#D9D9D9]'
-          console.log('enmail', progress)
           const userId = (progress.status === 'POSTED' ? '' : progress.user.email)
 
           const showButton =

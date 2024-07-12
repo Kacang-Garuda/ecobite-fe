@@ -94,7 +94,7 @@ export interface Event {
   user: User
 }
 
-type RegisteredEventType = 'PENDING' | 'REJECTED' | 'ACCEPTED'
+export type RegisteredEventType = 'PENDING' | 'REJECTED' | 'ACCEPTED'
 
 export interface RegisteredEvent {
   id: string
@@ -104,6 +104,7 @@ export interface RegisteredEvent {
   updatedAt: Date
   eventId: string
   userEmail: string
+  user: User
   event: Event
 }
 
