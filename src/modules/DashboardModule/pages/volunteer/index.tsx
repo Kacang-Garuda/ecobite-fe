@@ -1,4 +1,7 @@
-import { RegisteredEvent, Transaction } from '@/modules/AuthenticationModule/interface'
+import {
+  RegisteredEvent,
+  Transaction,
+} from '@/modules/AuthenticationModule/interface'
 import FoodCard from '@/components/elements/DashboardElements/FoodCard'
 import NullFood from '@/components/elements/DashboardElements/NullFood'
 import axios from 'axios'
@@ -9,11 +12,13 @@ import { useAuth } from '@/modules/AuthenticationModule/context/Authentication'
 import MyVolunteerCard from '@/components/elements/DashboardElements/MyVolunteerCard'
 
 const VolunteerLandingPage = () => {
-  const [volunteerList, setVolunteerList] = useState<RegisteredEvent[] | null>(null);
+  const [volunteerList, setVolunteerList] = useState<RegisteredEvent[] | null>(
+    null
+  )
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const token = Cookies.get('token');
+      const token = Cookies.get('token')
 
       if (token) {
         try {
@@ -24,17 +29,17 @@ const VolunteerLandingPage = () => {
                 Authorization: `Bearer ${token}`,
               },
             }
-          );
+          )
 
-          setVolunteerList(response.data.data);
+          setVolunteerList(response.data.data)
         } catch (error) {
-          console.error('Failed to fetch user data', error);
+          console.error('Failed to fetch user data', error)
         }
       }
-    };
+    }
 
-    fetchUserData();
-  }, []);
+    fetchUserData()
+  }, [])
   return (
     <div className="relative flex flex-col flex-grow items-center justify-center bg-white px-16 py-6 font-bold">
       <div className="w-full flex flex-row justify-center relative py-4">
@@ -44,7 +49,7 @@ const VolunteerLandingPage = () => {
       </div>
       {volunteerList && volunteerList.length > 0 ? (
         <div className="flex flex-col w-full gap-5 justify-start">
-          {volunteerList.map((value, index) => (
+          {volunteerList.map((value, index) =>
             value.event ? (
               <MyVolunteerCard
                 key={index}
@@ -56,12 +61,12 @@ const VolunteerLandingPage = () => {
                 status={value.status}
               />
             ) : null
-          ))}
+          )}
         </div>
       ) : (
         <div className="flex items-center justify-center w-full h-full p-20">
           <p className="font-bold text-xl text-[#828282]">
-            You haven't applied to any volunteering event :(
+            You haven&apos;t applied to any volunteering event :(
           </p>
         </div>
       )}
