@@ -15,6 +15,7 @@ import ManageEvent from './event/manageevent/index'
 import ManageVolunteerCard from '@/components/elements/DashboardElements/ManageVolunteerCard'
 import EditEvent from './event/editevent/index';
 import MoneyReceived from './moneyreceived/index';
+import ListVolunteer from './volunteer/listvolunteer'
 
 const DashboardLandingPage = () => {
   const { user, isLoading } = useAuth()
@@ -109,6 +110,8 @@ const DashboardLandingPage = () => {
           return <MoneyReceived />;
         case 'editEvent':
           return <EditEvent id={id} />;
+        case 'listVolunteer':
+          return <ListVolunteer id={id}/>
         default:
           return <></>;
       }

@@ -45,6 +45,10 @@ const ManageEvent: React.FC<ManageEventProps> = ({ setActivePage }) => {
     setActivePage(`editEvent:${id}`)
   }
 
+  const handleVolunteer = (id: string) => {
+    setActivePage(`listVolunteer:${id}`)
+  }
+
   return (
     <div className="relative flex flex-col flex-grow items-center justify-center bg-white px-16 py-6 font-bold">
       <div className="w-full flex flex-row justify-center relative py-4">
@@ -69,6 +73,7 @@ const ManageEvent: React.FC<ManageEventProps> = ({ setActivePage }) => {
               registeredUser={value.registeredUsers.length}
               onEdit={() => handleEdit(value.id)}
               handleTrigger={handleTrigger}
+              handleVolunteer={() => handleVolunteer(value.id)}
             />
           ))}
         </div>

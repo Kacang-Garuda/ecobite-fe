@@ -11,6 +11,7 @@ interface VolunteerCardProps {
   date: string;
   city: string;
   registeredUser: number;
+  handleVolunteer: () => void;
   onEdit: () => void;
   handleTrigger: () => void;
 }
@@ -24,7 +25,8 @@ const ManageVolunteerCard: React.FC<VolunteerCardProps> = ({
   city,
   registeredUser,
   onEdit,
-  handleTrigger
+  handleTrigger,
+  handleVolunteer
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
@@ -117,11 +119,14 @@ const ManageVolunteerCard: React.FC<VolunteerCardProps> = ({
             </div>
           </div>
           <div className="flex">
-            <label
+            <button
+                onClick={() => {
+                    handleVolunteer();
+                }}
               className={`flex px-6 py-2 justify-center items-center gap-2.5 text-xs rounded-lg font-semibold bg-[#449342] text-white`}
             >
               {registeredUser} volunteers applied
-            </label>
+            </button>
           </div>
         </div>
       </div>
